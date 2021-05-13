@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_customer_infos_fiscal_type_manager,fiscal_type manager,model_customer_infos_fiscal_type,base.group_system,1,1,1,1
+access_customer_infos_fiscal_type_user,fiscal_type user,model_customer_infos_fiscal_type,base.group_user,1,0,0,0
+access_customer_infos_social_regime_manager,social_regime manager,model_customer_infos_social_regime,base.group_system,1,1,1,1
+access_customer_infos_social_regime_user,social_regime user,model_customer_infos_social_regime,base.group_user,1,0,0,0
+access_customer_infos_vat_type_manager,vat_type manager,model_customer_infos_vat_type,base.group_system,1,1,1,1
+access_customer_infos_vat_type_user,vat_type user,model_customer_infos_vat_type,base.group_user,1,0,0,0
+access_customer_infos_legal_type_manager,legal_type manager,model_customer_infos_legal_type,base.group_system,1,1,1,1
+access_customer_infos_legal_type_user,legal_type user,model_customer_infos_legal_type,base.group_user,1,0,0,0
+access_customer_infos_social_type_manager,social_type manager,model_customer_infos_social_type,base.group_system,1,1,1,1
+access_customer_infos_social_type_user,social_type user,model_customer_infos_social_type,base.group_user,1,0,0,0
+access_customer_infos_activity_type_manager,activity_type manager,model_customer_infos_activity_type,base.group_system,1,1,1,1
+access_customer_infos_activity_type_user,activity_type user,model_customer_infos_activity_type,base.group_user,1,0,0,0
