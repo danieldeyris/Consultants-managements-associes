@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="move_view_form_inherit" model="ir.ui.view">
+        <field name="name">phi_account_analytic.move_form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='journal_id']" position="after">
+            <field name="account_analytic_id" attrs="{'readonly': [('name', '!=', '/')]}"/>
+          </xpath>
+        </field>
+     </record>
+
+    <record id="invoice_view_tree_inherit" model="ir.ui.view">
+        <field name="name">phi_account_analytic.invoice_tree</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+          <xpath expr="//tree[1]/field[@name='name']" position="before">
+            <field name="account_analytic_id"/>
+          </xpath>
+        </field>
+    </record>
+
+        <record id="move_view_tree_inherit" model="ir.ui.view">
+        <field name="name">phi_account_analytic.move_tree</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_tree"/>
+        <field name="arch" type="xml">
+          <xpath expr="//tree[1]/field[@name='date']" position="before">
+            <field name="account_analytic_id"/>
+          </xpath>
+        </field>
+    </record>
+
+     <record id="phi_account_analytic_view_account_move_filter" model="ir.ui.view">
+        <field name="name">phi_account_analytic.view_account_move_filter</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_move_filter"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='journal_id']" position="after">
+            <field name="account_analytic_id"/>
+          </xpath>
+          <xpath expr="//filter[@name='by_company']" position="after">
+            <filter context="{'group_by': 'account_analytic_id'}" name="studio_group_by_8XfLa" string="Analytic Account"/>
+          </xpath>
+        </field>
+    </record>
+
+     <record id="phi_account_analytic_view_account_move_line_filter" model="ir.ui.view">
+        <field name="name">phi_account_analytic.view_account_move_line_filter</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='reconcile_model_id']" position="after">
+            <field name="analytic_account_id"/>
+          </xpath>
+          <xpath expr="//filter[@name='groupby_date']" position="after">
+            <filter context="{'group_by': 'analytic_account_id'}" name="studio_group_by_OLgnC" string="Analytic Account"/>
+          </xpath>
+        </field>
+    </record>
+
+     <record id="phi_account_analytic_view_account_invoice_filter" model="ir.ui.view">
+        <field name="name">phi_account_analytic.view_account_invoice_filter</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+          <xpath expr="//search[1]/field[@name='date']" position="after">
+            <field name="account_analytic_id"/>
+          </xpath>
+          <xpath expr="//filter[@name='duedate']" position="after">
+            <filter context="{'group_by': 'account_analytic_id'}" name="studio_group_by_huTx7" string="Analytic Account"/>
+          </xpath>
+        </field>
+    </record>
+
+
+</odoo>

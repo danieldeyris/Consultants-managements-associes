@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="customer_infos.social_regime_list">
+            <field name="name">customer_infos social_regime.list</field>
+            <field name="model">customer_infos.social_regime</field>
+            <field name="arch" type="xml">
+                <tree  editable="bottom">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="customer_infos.social_regime_action_window">
+            <field name="name">Social Regime</field>
+            <field name="res_model">customer_infos.social_regime</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem name="Social Regime" id="customer_infos.social_regime_menu" parent="sale.menu_sale_config"
+                  action="customer_infos.social_regime_action_window"/>
+
+    </data>
+</odoo>
