@@ -1,0 +1,48 @@
+<odoo>
+    <!-- Liste view Annonces-->
+    <record id="annonces_list_view" model="ir.ui.view">
+        <field name="name">Liste annonces</field>
+        <field name="model">annonce.immobiliere</field>
+        <field name="arch" type="xml">
+            <tree string="Liste">
+                <field name="name"/>
+                <field name="prix_bien"/>
+                <field name="etat"/>
+                <field name="honoraires"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Liste view composition-->
+    <record id="composition_list_view" model="ir.ui.view">
+        <field name="name">Liste compositions</field>
+        <field name="model">annonce.immobiliere.composition</field>
+        <field name="arch" type="xml">
+            <tree string="Liste">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="annonce_immobiliere_action" model="ir.actions.act_window">
+        <field name="name">Annonces Immobiliere</field>
+        <field name="res_model">annonce.immobiliere</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="annonce_immobiliere_composition_action" model="ir.actions.act_window">
+        <field name="name">Compositions</field>
+        <field name="res_model">annonce.immobiliere.composition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_root" name="Entrainement 2">
+        <menuitem id="second_menu_pr" name="Annonces">
+            <menuitem id="annonce_immobiliere_menu_action" action="annonce_immobiliere_action"/>
+        </menuitem>
+        <menuitem id="troisieme_menu" name="Compositions">
+            <menuitem id="annonce_immobiliere_composition_menu_action" action="annonce_immobiliere_composition_action"/>
+        </menuitem>
+    </menuitem>
+</odoo>

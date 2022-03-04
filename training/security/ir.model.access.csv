@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+training.access_estate_property,access_estate_property,training.model_estate_property,base.group_user,1,1,1,1
+access_estate_property_type,access_estate_property_type,model_estate_property_type,base.group_user,1,1,1,1
+access_estate_property_tag,access_estate_property_tag,model_estate_property_tag,base.group_user,1,1,1,1
+access_annonce_immobiliere,access_annonce_immobiliere,model_annonce_immobiliere,base.group_user,1,1,1,1
+access_annonce_immobiliere_composition,access_annonce_immobiliere_composition,model_annonce_immobiliere_composition,base.group_user,1,1,1,1
+access_estate_property_offer,access_estate_property_offer,model_estate_property_offer,base.group_user,1,1,1,1
