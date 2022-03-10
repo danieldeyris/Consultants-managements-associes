@@ -5,7 +5,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
-                <page string="Renseignements" name="page_renseignement" attrs="{'invisible': [('is_company','!=',True)]}">
+                <page string="Renseignements" name="page_renseignement" attrs="{'invisible': [('is_company','=',True)]}">
                     <group name="group_renseignement">
                         <group name="group_renseignement_left">
                             <field name="telephone_domicile" string="Téléphone domicile" widget="phone"/>
