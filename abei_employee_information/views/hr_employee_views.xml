@@ -9,7 +9,7 @@
                 <page string="Matériel" name="page_materiel">
                     <group name="group_materiel">
                         <group name="group_materiel_left">
-                            <field name="phone_model" string="Modèle Téléphone"/>
+<!--                            <field name="phone_model" string="Modèle Téléphone"/>-->
                             <field name="numero_imei" string="N° IMEI"/>
                             <field name="numero_pin" string="N° PIN"/>
                             <field name="numero_puk" string="N° PUK"/>

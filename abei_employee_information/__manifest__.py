@@ -12,7 +12,7 @@ Ajout également du renseignement EC Inscrit (oui/non)
 
 Feature :
 - Checkbox EC Inscrit
-- Onglet Matériel (Phone type, Imei, Pin, Puk)
+- Onglet Matériel (Imei, Pin, Puk)
 """,
     'author': 'Abeille',
     'website': 'https://aca-consult.com/',
