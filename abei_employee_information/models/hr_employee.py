@@ -8,3 +8,6 @@ class HrEmployeePrivate(models.Model):
     numero_pin = fields.Char(string="N° PIN")
     numero_puk = fields.Char(string="N° PUK")
     ec_inscrit = fields.Boolean(string="EC Inscrit")
+    # champs monétaire
+    # Taux de facturation
+    taux_facturation = fields.Monetary()

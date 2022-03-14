@@ -20,6 +20,17 @@
         </field>
     </record>
 
+    <record id="hr_employee_view_form_taux_facturation" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.taux.facturation</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='hr_settings']/group[2]/group[@name='timesheet']/label[1]" position="before">
+                <field name="taux_facturation" string="Taux Facturation"/>
+            </xpath>
+        </field>
+    </record>
+
     <record id="hr_employee_view_form_ec_inscrit" model="ir.ui.view">
         <field name="name">hr.employee.view.form.ec.inscrit</field>
         <field name="model">hr.employee</field>

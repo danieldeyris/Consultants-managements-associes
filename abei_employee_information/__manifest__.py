@@ -8,16 +8,19 @@
     'summary': 'Employee Information',
     'description': """
 Ce module ajoute des informations sur le matériel remis à l'employé.
-Ajout également du renseignement EC Inscrit (oui/non)
+Ajout champ de renseignement EC Inscrit (oui/non)
+Ajout champ Taux Facturation
 
 Feature :
 - Checkbox EC Inscrit
+- HR Settings -> Taux Facturation
 - Onglet Matériel (Imei, Pin, Puk)
 """,
     'author': 'Abeille',
     'website': 'https://aca-consult.com/',
     'depends': [
         'hr',
+        'timesheet_grid',
     ],
     'data': [
         'views/hr_employee_views.xml',
