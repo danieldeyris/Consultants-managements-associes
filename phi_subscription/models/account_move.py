@@ -6,6 +6,7 @@ class AccountMove(models.Model):
 
     subscription_id = fields.Many2one('sale.subscription')
 
+    @api.model
     def create(self, vals_list):
         res = super().create(vals_list)
         if res.subscription_id:
