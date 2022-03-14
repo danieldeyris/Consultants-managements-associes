@@ -6,10 +6,10 @@ class AccountMove(models.Model):
 
     subscription_id = fields.Many2one('sale.subscription')
 
-    if subscription_id:
-        def create(self, vals_list):
-            res = super().create(vals_list)
-            if res.subscription_id:
-                res.invoice_date = res.subscription_id.recurring_next_date
-            return res
+    @api.model
+    def create(self, vals_list):
+        res = super().create(vals_list)
+        if res.subscription_id:
+            res.invoice_date = res.subscription_id.recurring_next_date
+        return res
 
