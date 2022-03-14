@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_employee_view_form_materiel" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.materiel</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Matériel" name="page_materiel">
+                    <group name="group_materiel">
+                        <group name="group_materiel_left">
+                            <field name="numero_imei" string="N° IMEI"/>
+                            <field name="numero_pin" string="N° PIN"/>
+                            <field name="numero_puk" string="N° PUK"/>
+                        </group>
+                        <group name="group_materiel_right"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_employee_view_form_taux_facturation" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.taux.facturation</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='hr_settings']/group[2]/group[@name='timesheet']/label[1]" position="before">
+                <field name="taux_facturation" string="Taux Facturation"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_employee_view_form_ec_inscrit" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.ec.inscrit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="ec_inscrit" string="EC Inscrit"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

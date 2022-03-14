@@ -1,0 +1,21 @@
+<odoo>
+    <record id="partner_social_network_inherit_form" model="ir.ui.view">
+        <field name="name">partner_social_network_inherit_form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Réseaux Sociaux" name="page_social_network" attrs="{'invisible': [('is_company','!=',True)]}">
+                    <group name="group_social_network">
+                        <group name="group_social_network_left">
+                            <field name="facebook" string="Facebook"/>
+                            <field name="linkedin" string="Linkedin"/>
+                            <field name="twitter" string="Twitter"/>
+                        </group>
+                        <group name="group_social_network_right"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

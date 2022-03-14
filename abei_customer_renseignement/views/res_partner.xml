@@ -1,0 +1,26 @@
+<odoo>
+    <record id="partner_renseignement_inherit_form" model="ir.ui.view">
+        <field name="name">partner_renseignement_inherit_form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Renseignements" name="page_renseignement" attrs="{'invisible': [('is_company','!=',True)]}">
+                    <group name="group_renseignement">
+                        <group name="group_renseignement_left">
+                            <field name="telephone_domicile" string="Téléphone domicile" widget="phone"/>
+                            <field name="telephone_perso" string="Téléphone Perso" widget="phone"/>
+                            <field name="regime_fiscal_perso" string="Régime Fiscal Perso"/>
+                            <field name="regime_social_perso" string="Régime Social Perso"/>
+                        </group>
+                        <group name="group_renseignement_right">
+                            <field name="facebook_perso" string="Facebook Perso"/>
+                            <field name="linkedin_perso" string="Linkedin Perso"/>
+                            <field name="twitter_perso" string="Twitter Perso"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
