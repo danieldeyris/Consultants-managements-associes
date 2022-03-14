@@ -14,7 +14,6 @@ price_unit => prend alors pour valeur le taux de facturation horaire du collabor
     'author': 'Abeille',
     'website': 'https://aca-consult.com/',
     'depends': [
-        'hr',
         'sale_management',
         'abei_employee_information',
     ],
