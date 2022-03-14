@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Phidias : Abonnements",
-
-    'summary': """
-        Terme à échoir / terme échu
-        """,
-
+    'name': 'Abeille : Abonnements',
+    'version': '14.0.0.0',
+    'summary': 'Abonnements',
     'description': """
-        Terme à échoir / terme échu
+    Ajout terme à échoir / terme échus
+    
     """,
-
-    'author': "Phidias",
-    'website': "http://www.phidias.fr",
+    'author': 'Abeille',
+    'website': 'https://aca-consult.com/',
 
 
     'category': 'Uncategorized',
@@ -25,6 +22,5 @@
 
     # always loaded
     'data': [
-        'views/sale_subscription.xml',
     ],
 }
