@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- vue formulaire -->
+    <record id="project_views_form2_millesime" model="ir.ui.view">
+        <field name="name">project.task.view.form.millesime</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='partner_id']" position="after">
+            <field name="millesime_id"/>
+          </xpath>
+        </field>
+    </record>
+
+    <!-- vue liste -->
+    <record id="project_views_tree_millesime" model="ir.ui.view">
+        <field name="name">project.task.view.tree.millesime</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='partner_id']" position="after">
+            <field name="millesime_id" optional="show"/>
+          </xpath>
+        </field>
+    </record>
+
+    <record id="project_task_view_search_millesime" model="ir.ui.view">
+        <field name="name">project.task.view.search.jonction</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+              <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="millesime_id"/>
+              </xpath>
+              <xpath expr="//filter[@name='group_create_date']" position="after">
+                <filter context="{'group_by': 'millesime_id'}" name="millesime_group_by" string="Millesime"/>
+              </xpath>
+        </field>
+    </record>
+
+
+</odoo>
