@@ -1,0 +1,30 @@
+<odoo>
+    <record id="project_edit_project_etiquette_inherit" model="ir.ui.view">
+        <field name="name">project.edit.project.etiquette.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='privacy_visibility']" position="after">
+                <field widget="many2many_tags" name="etiquette_projet" string="Etiquettes de projet" options="{'color_field': 'color'}"/>
+            </xpath>
+        </field>
+    </record>
+    <!-- Model project.project -->
+    <record id="project_view_project_project_filter_inherit" model="ir.ui.view">
+        <field name="name">project.view.project.project.filter.inherit</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_project_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search[1]/separator[2]" position="after">
+                <filter name="Administratif" string="Administratif" domain="[['etiquette_projet','ilike','Administratif']]"/>
+                <filter name="CAC" string="CAC" domain="[['etiquette_projet','ilike','CAC']]"/>
+                <filter name="Comptable" string="Comptable" domain="[['etiquette_projet','ilike','Comptable']]"/>
+                <filter name="Juridique" string="Juridique" domain="[['etiquette_projet','ilike','Juridique']]"/>
+                <filter name="Social" string="Social" domain="[['etiquette_projet','ilike','Social']]"/>
+                <separator name="separator_up"/>
+                <filter name="Informatique" string="Informatique" domain="[['etiquette_projet','ilike','Informatique']]"/>
+                <separator name="separator_down"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
