@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import fields, models, api
 
 
 class SaleOrder(models.Model):
@@ -18,6 +18,16 @@ class SaleOrder(models.Model):
                                      ('semestriel','Semestriel')])
 
     acompte_date_debut = fields.Date()
+
+    # Lors de la sélections / désélection du la checkbox acompte
+    @api.onchange('acompte_checkbox')
+    def _changement_etat_acompte_checkbox(self):
+        if self.acompte_checkbox:
+            self.acompte_type = ''
+            self.acompte_date_debut = ''
+        else:
+            self.acompte_type = ''
+            self.acompte_date_debut = ''
 
     # def _prepare_invoice(self):
     #     res = super()._prepare_invoice()
