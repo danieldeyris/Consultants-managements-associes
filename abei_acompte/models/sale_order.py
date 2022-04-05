@@ -4,6 +4,7 @@ from odoo import fields, models, api
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    subscription_count = fields.Char(default="1")
     # Une case à cocher permet d’indiquer que la commande est soumise à acompte
     acompte_checkbox = fields.Boolean(string="Géré par acompte")
 
@@ -15,9 +16,10 @@ class SaleOrder(models.Model):
     acompte_type = fields.Selection([('mensuel','Mensuel'),
                                      ('bimestriel','Bimestriel'),
                                      ('trimestriel','Trimestriel'),
-                                     ('semestriel','Semestriel')])
+                                     ('semestriel','Semestriel')], string="Type d'acompte")
 
-    acompte_date_debut = fields.Date()
+    acompte_date_debut = fields.Date(string="Date de début de l'acompte")
+    acompte_id = fields.Many2one("abei_acompte.acompte")
 
     # Lors de la sélections / désélection du la checkbox acompte
     @api.onchange('acompte_checkbox')
@@ -29,9 +31,36 @@ class SaleOrder(models.Model):
             self.acompte_type = ''
             self.acompte_date_debut = ''
 
+    def action_confirm(self):
+        res = super().action_confirm()
+        for sale in self:
+            if sale.acompte_checkbox:
+                sale.acompte_id = sale.env['abei_acompte.acompte'].create({
+                    'name': "Ninos",
+                    'client': sale.partner_id.id,
+                    'bon_de_commande': sale.id,
+                    # 'date_prochaine_facture': ,
+                    'type_acompte': sale.acompte_type,
+                    'date_debut_acompte': sale.acompte_date_debut,
+                    'montant_a_repartir': sum(sale.order_line.filtered(
+                        lambda l: not l.product_id.recurring_invoice).mapped("price_subtotal"))
+                })
+        return res
+
     # def _prepare_invoice(self):
     #     res = super()._prepare_invoice()
     #     res['acompte_checkbox'] = self.acompte_checkbox
     #     res['acompte_type'] = self.acompte_type
     #     res['acompte_date_debut'] = self.acompte_date_debut
     #     return res
+
+    def action_open_acompte(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "acompte",
+            "view_mode": "form",
+            "res_model": "abei_acompte.acompte",
+            "res_id": self.acompte_id.id,
+            "context": "{'create':False}"
+        }
