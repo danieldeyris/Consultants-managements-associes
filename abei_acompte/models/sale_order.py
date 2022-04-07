@@ -36,7 +36,7 @@ class SaleOrder(models.Model):
         for sale in self:
             if sale.acompte_checkbox:
                 sale.acompte_id = sale.env['abei_acompte.acompte'].create({
-                    'name': "Ninos",
+                    'name': f' ACOMPTE/{sale.name} - {sale.partner_id.name}',
                     'client': sale.partner_id.id,
                     'bon_de_commande': sale.id,
                     # 'date_prochaine_facture': ,

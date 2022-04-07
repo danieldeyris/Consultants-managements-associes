@@ -20,8 +20,8 @@
                 <form string="Subscription" class="o_subscription_form">
                     <!-- BOUTONS HEADER -->
                     <header>
-                        <button string="Confirmer" name="confirm_acompte" type="object" class="btn-primary"/>
-                        <button string="Fermer" name="close_acompte" type="object" class="btn-primary"/>
+                        <button string="Confirmer" name="confirm_acompte" type="object"/>
+                        <button string="Fermer" name="close_acompte" type="object"/>
                         <button string="Générer" name="generate_acompte" type="object" class="btn-primary"/>
                     </header>
                     <sheet string="Acompte">
@@ -57,19 +57,22 @@
                         </group>
                         <!-- LIGNES D'ACOMPTE -->
                         <div>
-                        <notebook>
-                            <page string="Lignes d'acomptes" id="lines">
-                                <field name="acompte_line">
-                                    <tree editable="bottom">
-                                        <field name="numero_acompte"/>
-                                        <field name="libelle_acompte"/>
-                                        <field name="date_facture"/>
-                                        <field name="montant_acompte"/>
-                                    </tree>
-                                </field>
-                            </page>
-                        </notebook>
-                    </div>
+                            <notebook>
+                                <page string="Lignes d'acomptes" id="lines">
+                                    <field name="acompte_line">
+                                        <tree editable="bottom">
+                                            <field name="numero_acompte"/>
+                                            <field name="libelle_acompte"/>
+                                            <field name="date_facture"/>
+                                            <field name="montant_acompte"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
+                        </div>
+                        <group class="oe_subtotal_footer" colspan="2" name="sale_total">
+                            <field name="montant_a_repartir" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </group>
                     </sheet>
                 </form>
             </field>
