@@ -1,0 +1,98 @@
+<odoo>
+    <data>
+        <!-- VUE LISTE -->
+        <record id="acompte_view_list" model="ir.ui.view">
+            <field name="name">acompte.view.list</field>
+            <field name="model">abei_acompte.acompte</field>
+            <field name="arch" type="xml">
+                <tree string="Acomptes" create="0">
+                    <field name="display_name"/>
+               </tree>
+            </field>
+        </record>
+
+
+        <!-- VUE FORM -->
+        <record id="sale_acompte_view_form" model="ir.ui.view">
+            <field name="name">sale.acompte.view.form</field>
+            <field name="model">abei_acompte.acompte</field>
+            <field name="arch" type="xml">
+                <form string="Subscription" class="o_subscription_form" create="0">
+                    <!-- BOUTONS HEADER -->
+                    <header>
+<!--                        <button string="Confirmer" name="confirm_acompte" type="object"/>-->
+<!--                        <button string="Fermer" name="close_acompte" type="object"/>-->
+                        <button string="Générer" name="generate_acompte" type="object" class="btn-primary"/>
+                    </header>
+                    <sheet string="Acompte">
+                        <!-- BOUTONS CLIENT + DEVIS -->
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" icon="fa-globe" name="button_client" type="object">
+                                <div class="o_field_widget o_stat_info">
+                                    Client
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-book" name="button_devis" type="object">
+                                Devis
+                            </button>
+                        </div>
+                        <!-- GROS TEXTE NOM -->
+                        <div class="oe_title mw-100 pr-0">
+                            <h1 class="flex-fill d-flex flex-row">
+                                <field name="display_name" class="text-truncate w-100"/>
+                            </h1>
+                        </div>
+                        <!-- CONTENU FORMULAIRE -->
+                        <group name="main">
+                            <group>
+                                <field name="client"/>
+                                <field name="bon_de_commande"/>
+                                <field name="date_prochaine_facture" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
+                                <field name="millesime"/>
+                                <field name="lignes_existantes" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="type_acompte" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
+                                <field name="date_debut_acompte" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
+                                <field name="montant_a_repartir" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
+                            </group>
+                        </group>
+                        <!-- LIGNES D'ACOMPTE -->
+                        <div>
+                            <notebook>
+                                <page string="Lignes d'acomptes" id="lines">
+                                    <field name="acompte_line">
+                                        <tree editable="bottom">
+                                            <field name="numero_acompte"/>
+                                            <field name="libelle_acompte"/>
+                                            <field name="date_facture"/>
+                                            <field name="montant_acompte"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
+                        </div>
+                        <group class="oe_subtotal_footer h3" name="montant_total">
+                            <field name="montant_total_lignes_acompte"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+
+
+
+        <!-- ACTIONS -->
+        <record id="abei_acompte.acompte_action_window" model="ir.actions.act_window">
+            <field name="name">Acompte</field>
+            <field name="res_model">abei_acompte.acompte</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- MENU -->
+        <menuitem name="Acompte" id="abei_acompte.acompte_menu" web_icon="abei_acompte,static/description/icon_acompte.png"
+                  action="abei_acompte.acompte_action_window"/>
+    </data>
+</odoo>
