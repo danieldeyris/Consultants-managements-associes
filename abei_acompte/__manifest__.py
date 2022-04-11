@@ -27,6 +27,7 @@ Lorsque la commande est confirmée l’acompte est généré dans la gestion des
     'website': 'https://aca-consult.com/',
     'depends': [
         'sale_management',
+        'abei_millesime',
     ],
     'data': [
         'views/sale_views.xml',

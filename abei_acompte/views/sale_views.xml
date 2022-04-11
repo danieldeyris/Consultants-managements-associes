@@ -6,8 +6,10 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='payment_term_id']" position="after">
                 <field name="acompte_checkbox"/>
-                <field name="acompte_type" attrs="{'invisible': [('acompte_checkbox', '=', False)]}"/>
-                <field name="acompte_date_debut" attrs="{'invisible': [('acompte_checkbox', '=', False)]}"/>
+                <field name="acompte_type" attrs="{
+                'invisible': [('acompte_checkbox', '=', False)],
+                'required': [('acompte_checkbox', '=', True)]}"/>
+                <field name="acompte_date_debut" attrs="{'invisible': [('acompte_checkbox', '=', False)],'required': [('acompte_checkbox', '=', True)]}"/>
 <!--                <field name="acompte_id"/>-->
             </xpath>
             <xpath expr="//div[hasclass('oe_button_box')]/button[1]" position="before">

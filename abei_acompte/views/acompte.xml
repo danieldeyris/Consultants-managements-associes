@@ -17,11 +17,11 @@
             <field name="name">sale.acompte.view.form</field>
             <field name="model">abei_acompte.acompte</field>
             <field name="arch" type="xml">
-                <form string="Subscription" class="o_subscription_form">
+                <form string="Subscription" class="o_subscription_form" create="0">
                     <!-- BOUTONS HEADER -->
                     <header>
-                        <button string="Confirmer" name="confirm_acompte" type="object"/>
-                        <button string="Fermer" name="close_acompte" type="object"/>
+<!--                        <button string="Confirmer" name="confirm_acompte" type="object"/>-->
+<!--                        <button string="Fermer" name="close_acompte" type="object"/>-->
                         <button string="Générer" name="generate_acompte" type="object" class="btn-primary"/>
                     </header>
                     <sheet string="Acompte">
@@ -47,12 +47,14 @@
                             <group>
                                 <field name="client"/>
                                 <field name="bon_de_commande"/>
-                                <field name="date_prochaine_facture"/>
+                                <field name="date_prochaine_facture" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
+                                <field name="millesime"/>
+                                <field name="lignes_existantes" invisible="1"/>
                             </group>
                             <group>
-                                <field name="type_acompte"/>
-                                <field name="date_debut_acompte"/>
-                                <field name="montant_a_repartir"/>
+                                <field name="type_acompte" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
+                                <field name="date_debut_acompte" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
+                                <field name="montant_a_repartir" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
                             </group>
                         </group>
                         <!-- LIGNES D'ACOMPTE -->
@@ -70,8 +72,8 @@
                                 </page>
                             </notebook>
                         </div>
-                        <group class="oe_subtotal_footer" colspan="2" name="sale_total">
-                            <field name="montant_a_repartir" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <group class="oe_subtotal_footer h3" name="montant_total">
+                            <field name="montant_total_lignes_acompte"/>
                         </group>
                     </sheet>
                 </form>
@@ -90,7 +92,7 @@
         </record>
 
         <!-- MENU -->
-        <menuitem name="Acompte" id="abei_acompte.acompte_menu"
+        <menuitem name="Acompte" id="abei_acompte.acompte_menu" web_icon="abei_acompte,static/description/icon_acompte.png"
                   action="abei_acompte.acompte_action_window"/>
     </data>
 </odoo>

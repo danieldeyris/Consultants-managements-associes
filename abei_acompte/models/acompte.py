@@ -1,4 +1,4 @@
-from odoo import fields, models, exceptions
+from odoo import fields, models, exceptions, api, _
 from dateutil.relativedelta import relativedelta
 from math import *
 
@@ -27,19 +27,43 @@ class Acompte(models.Model):
     date_debut_acompte = fields.Date(string="Date début acompte", required=True)
     montant_a_repartir = fields.Monetary(string="Montant à répartir", currency_field="currency_id", required=True)
     acompte_line = fields.Many2many("abei_acompte.acompte.line")
-    montant_total_lignes_acompte = fields.Monetary(string="Total", currency_field="currency_id")
+    montant_total_lignes_acompte = fields.Monetary(compute='_compute_amount', string='Total', store=True, readonly=True)
+    millesime = fields.Many2one("abei_millesime.millesime", readonly=True)
+    lignes_existantes = fields.Boolean()
 
-    def confirm_acompte(self):
-        pass
-
-    def close_acompte(self):
-        pass
+    @api.onchange('acompte_line')
+    def _compute_amount(self):
+        for acompte in self:
+            total = 0.0
+            for line in acompte.acompte_line:
+                total += line.montant_acompte
+            acompte.montant_total_lignes_acompte = total
+            # S'il n'y a plus de lignes, changement état checkbox
+            if len(acompte.acompte_line) == 0:
+                acompte.lignes_existantes = False
+            else:
+                acompte.lignes_existantes = True
 
     def button_client(self):
-        pass
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Client",
+            "view_mode": "form",
+            "res_model": "res.partner",
+            "res_id": self.client.id
+        }
 
     def button_devis(self):
-        pass
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Devis",
+            "view_mode": "form",
+            "res_model": "sale.order",
+            "res_id": self.bon_de_commande.id
+        }
 
     def generate_acompte(self):
         for record in self:
@@ -47,6 +71,8 @@ class Acompte(models.Model):
                 raise exceptions.UserError(
                     "Veuillez supprimer les lignes d'acompte actuel pour en générer de nouvelles.")
             else:
+                record.lignes_existantes = True
+                record.montant_total_lignes_acompte = record.montant_a_repartir
                 line_number = int(PERIOD[record.type_acompte])
                 # calcul du nombre de mois à ajouter à chaques lignes d'acompte
                 interval = int(12 / PERIOD[record.type_acompte])
@@ -166,3 +192,15 @@ class AcompteLine(models.Model):
     date_facture = fields.Date(string="Date Facture")
     montant_acompte = fields.Monetary(string="Montant de l'acompte", currency_field="currency_id")
     acompte_id = fields.Many2one("abei_acompte.acompte", required=True)
+    #
+    # def unlink(self, cr, uid, ids, context=None):
+    #     qt = 0
+    #     for line in self.browse(cr, uid, ids):
+    #         qt += 1
+    #     if qt == 0:
+    #         self.acompte_id.lignes_existantes = False
+
+
+
+
+

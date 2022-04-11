@@ -24,12 +24,8 @@ class SaleOrder(models.Model):
     # Lors de la sélections / désélection du la checkbox acompte
     @api.onchange('acompte_checkbox')
     def _changement_etat_acompte_checkbox(self):
-        if self.acompte_checkbox:
-            self.acompte_type = ''
-            self.acompte_date_debut = ''
-        else:
-            self.acompte_type = ''
-            self.acompte_date_debut = ''
+        self.acompte_type = ''
+        self.acompte_date_debut = ''
 
     def action_confirm(self):
         res = super().action_confirm()
@@ -39,20 +35,14 @@ class SaleOrder(models.Model):
                     'name': f' ACOMPTE/{sale.name} - {sale.partner_id.name}',
                     'client': sale.partner_id.id,
                     'bon_de_commande': sale.id,
-                    # 'date_prochaine_facture': ,
+                    'date_prochaine_facture': sale.acompte_date_debut, # A MODIFIER
                     'type_acompte': sale.acompte_type,
                     'date_debut_acompte': sale.acompte_date_debut,
+                    'millesime': sale.millesime.id,
                     'montant_a_repartir': sum(sale.order_line.filtered(
                         lambda l: not l.product_id.recurring_invoice).mapped("price_subtotal"))
                 })
         return res
-
-    # def _prepare_invoice(self):
-    #     res = super()._prepare_invoice()
-    #     res['acompte_checkbox'] = self.acompte_checkbox
-    #     res['acompte_type'] = self.acompte_type
-    #     res['acompte_date_debut'] = self.acompte_date_debut
-    #     return res
 
     def action_open_acompte(self):
         self.ensure_one()
