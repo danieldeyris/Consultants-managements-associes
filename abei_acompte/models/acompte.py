@@ -19,7 +19,7 @@ class Acompte(models.Model):
     name = fields.Char(default="Numéro devis - Nom client", readonly=True)
     client = fields.Many2one("res.partner", string="Client", readonly=True)
     bon_de_commande = fields.Many2one("sale.order", string="Bon de commande", readonly=True)
-    date_prochaine_facture = fields.Date(string="Date de prochaine facture", required=True)
+    date_prochaine_facture = fields.Date(string="Date de prochaine facture")
     type_acompte = fields.Selection([('mensuel', 'Mensuel'),
                                      ('bimestriel', 'Bimestriel'),
                                      ('trimestriel', 'Trimestriel'),
@@ -30,13 +30,14 @@ class Acompte(models.Model):
     montant_total_lignes_acompte = fields.Monetary(compute='_compute_amount', string='Total', store=True, readonly=True)
     millesime = fields.Many2one("abei_millesime.millesime", readonly=True)
     lignes_existantes = fields.Boolean()
-
+    reste_a_repartir = fields.Monetary(compute='_compute_amount', string='Reste à répartir', store=True, readonly=True)
     @api.onchange('acompte_line')
     def _compute_amount(self):
         for acompte in self:
             total = 0.0
             for line in acompte.acompte_line:
                 total += line.montant_acompte
+            acompte.reste_a_repartir = acompte.montant_a_repartir - total
             acompte.montant_total_lignes_acompte = total
             # S'il n'y a plus de lignes, changement état checkbox
             if len(acompte.acompte_line) == 0:
@@ -70,9 +71,13 @@ class Acompte(models.Model):
             if len(record.acompte_line) > 0:
                 raise exceptions.UserError(
                     "Veuillez supprimer les lignes d'acompte actuel pour en générer de nouvelles.")
+            elif record.date_prochaine_facture is False:
+                raise exceptions.UserError(
+                    "Veuillez selectionner une 'Date de prochaine facture'.")
             else:
+                print(record.date_prochaine_facture)
                 record.lignes_existantes = True
-                record.montant_total_lignes_acompte = record.montant_a_repartir
+                #record.montant_total_lignes_acompte = record.montant_a_repartir
                 line_number = int(PERIOD[record.type_acompte])
                 # calcul du nombre de mois à ajouter à chaques lignes d'acompte
                 interval = int(12 / PERIOD[record.type_acompte])
@@ -180,6 +185,21 @@ class Acompte(models.Model):
                         'montant_acompte': montant_ligne_acompte,
                         'acompte_id': record.id
                     })]
+                self._compute_amount()
+
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # !!!!!!!!VERIFICATIONS A FAIRE PLUS TARD : QU'UNE FACTURE N'AIT PAS DEJA ETE GENEREE
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # MODIFICATION DANS LE DEVIS DU TYPE ACOMPTE ET DE LA DATE DE DEBUT D'ACOMPTE
+    def write(self, vals):
+        res = super(Acompte, self).write(vals)
+        for sale in self.bon_de_commande:
+            print("ACOMPTE: ",sale)
+            if 'type_acompte' in vals:
+                sale['acompte_type'] = vals['type_acompte']
+            if 'date_debut_acompte' in vals:
+                sale['acompte_date_debut'] = vals['date_debut_acompte']
+        return res
 
 
 class AcompteLine(models.Model):
