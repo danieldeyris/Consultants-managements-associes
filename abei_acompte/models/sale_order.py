@@ -1,4 +1,4 @@
-from odoo import fields, models, api
+from odoo import fields, models, api, exceptions
 
 
 class SaleOrder(models.Model):
@@ -22,10 +22,10 @@ class SaleOrder(models.Model):
     acompte_id = fields.Many2one("abei_acompte.acompte")
 
     # Lors de la sélections / désélection du la checkbox acompte
-    @api.onchange('acompte_checkbox')
-    def _changement_etat_acompte_checkbox(self):
-        self.acompte_type = ''
-        self.acompte_date_debut = ''
+    # @api.onchange('acompte_checkbox')
+    # def _changement_etat_acompte_checkbox(self):
+    #     self.acompte_type = ''
+    #     self.acompte_date_debut = ''
 
     def action_confirm(self):
         res = super().action_confirm()
@@ -35,7 +35,7 @@ class SaleOrder(models.Model):
                     'name': f' ACOMPTE/{sale.name} - {sale.partner_id.name}',
                     'client': sale.partner_id.id,
                     'bon_de_commande': sale.id,
-                    'date_prochaine_facture': sale.acompte_date_debut, # A MODIFIER
+                    #'date_prochaine_facture': sale.acompte_date_debut, # A MODIFIER
                     'type_acompte': sale.acompte_type,
                     'date_debut_acompte': sale.acompte_date_debut,
                     'millesime': sale.millesime.id,
@@ -54,3 +54,48 @@ class SaleOrder(models.Model):
             "res_id": self.acompte_id.id,
             "context": "{'create':False}"
         }
+
+    # # CAS MODIFICATION DEVIS, VERIFICATION EXISTANCE D'ACOMPTE
+    # def write(self, vals):
+    #     res = super().write(vals)
+    #     for sale in self.acompte_id:
+    #         # sale['type_acompte'] = vals['acompte_type']
+    #         #print(sale['type_acompte'])
+    #     return res
+
+    def write(self, vals):
+        # existance acompte
+        if self.acompte_id.id:
+            # si acompte_checkbox fait partie des champs modifiés
+            if 'acompte_checkbox' in vals:
+                # si la checkbox est passée à l'état False alors qu'il existe encore des acomptes associés au devis
+                if vals['acompte_checkbox'] is False:
+                    raise exceptions.UserError(
+                        "Vous devez d'abord supprimer l'acompte associé au devis avant de pouvoir marquer ce devis comment 'Non géré par acompte'. \n\n[DEV EN COURS] - LES MODIFICATIONS DE CHAMPS NE SONT PAS ENCORE REPERCUTEES DANS L'ACOMPTE")
+
+            # si acompte_type fait partie des champs modifiés -> Vérifier qu'il n'y ait pas des lignes déjà générées dans l'acompte
+            if 'acompte_type' in vals:
+                # parcours des lignes d'acompte de l'acompte
+                for record in self.acompte_id:
+                    # s'il y a des lignes, alors erreur : il faut nettoyer avant
+                    if len(record.acompte_line) > 0:
+                        raise exceptions.UserError(
+                            f"Des lignes d'acompte sont présentes dans l'acompte {self.acompte_id.name}.\n\nVeuillez les supprimer avant de modifier le type d'acompte. Ou modifiez le type d'acompte directement depuis l'acompte lui-même. \n\n[DEV EN COURS] - LES MODIFICATIONS DE CHAMPS NE SONT PAS ENCORE REPERCUTEES DANS L'ACOMPTE")
+
+            # si acompte_date_debut fait partie des champs modifiés -> Vérifier qu'il n'y ait pas des lignes déjà générées dans l'acompte
+            if 'acompte_date_debut' in vals:
+                # parcours des lignes d'acompte de l'acompte
+                for record in self.acompte_id:
+                    # s'il y a des lignes, alors erreur : il faut nettoyer avant
+                    if len(record.acompte_line) > 0:
+                        raise exceptions.UserError(
+                            f"Des lignes d'acompte sont présentes dans l'acompte {self.acompte_id.name}.\n\nVeuillez les supprimer avant de modifier la date de début d'acompte. Ou modifiez la date de début d'acompte directement depuis l'acompte lui-même. \n\n[DEV EN COURS] - LES MODIFICATIONS DE CHAMPS NE SONT PAS ENCORE REPERCUTEES DANS L'ACOMPTE")
+
+            # modification finale
+            # for record in self.acompte_id:
+            #     print(record['type_acompte'])
+            #     print(vals['acompte_type'])
+            #     record['type_acompte'] = vals['acompte_type']
+
+        res = super().write(vals)
+        return res

@@ -72,8 +72,12 @@
                                 </page>
                             </notebook>
                         </div>
-                        <group class="oe_subtotal_footer h3" name="montant_total">
-                            <field name="montant_total_lignes_acompte"/>
+                        <group class="oe_subtotal_footer oe_right" colspan="2" name="acompte_total">
+                            <field name="reste_a_repartir" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                <label for="montant_total_lignes_acompte"/>
+                            </div>
+                            <field name="montant_total_lignes_acompte" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                         </group>
                     </sheet>
                 </form>
