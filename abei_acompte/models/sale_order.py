@@ -20,6 +20,8 @@ class SaleOrder(models.Model):
 
     acompte_date_debut = fields.Date(string="Date de début de l'acompte")
     acompte_id = fields.Many2one("abei_acompte.acompte")
+    # bidouillage pour permettre le décochage de "géré par acompte" si suppression de l'acompte. Et eviter le raise.
+    delete_from_acompte = fields.Boolean(default=False)
 
     # Lors de la sélections / désélection du la checkbox acompte
     # @api.onchange('acompte_checkbox')
@@ -69,7 +71,8 @@ class SaleOrder(models.Model):
             # si acompte_checkbox fait partie des champs modifiés
             if 'acompte_checkbox' in vals:
                 # si la checkbox est passée à l'état False alors qu'il existe encore des acomptes associés au devis
-                if vals['acompte_checkbox'] is False:
+                # self.delete_from_acompte ===> Si le changement d'état de la checkbox émane de abei_acompte.acompte via la suppression, alors étape sautée. Peut être amélioré.
+                if vals['acompte_checkbox'] is False and self.delete_from_acompte is False:
                     raise exceptions.UserError(
                         "Vous devez d'abord supprimer l'acompte associé au devis avant de pouvoir marquer ce devis comment 'Non géré par acompte'. \n\n[DEV EN COURS] - LES MODIFICATIONS DE CHAMPS NE SONT PAS ENCORE REPERCUTEES DANS L'ACOMPTE")
 
