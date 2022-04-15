@@ -27,10 +27,10 @@ class Acompte(models.Model):
     date_debut_acompte = fields.Date(string="Date début acompte", required=True)
     montant_a_repartir = fields.Monetary(string="Montant à répartir", currency_field="currency_id", required=True)
     acompte_line = fields.Many2many("abei_acompte.acompte.line")
-    montant_total_lignes_acompte = fields.Monetary(compute='_compute_amount', string='Total', store=True, readonly=True)
+    montant_total_lignes_acompte = fields.Monetary(compute='_compute_amount', string='Total', readonly=True)
     millesime = fields.Many2one("abei_millesime.millesime", readonly=True)
     lignes_existantes = fields.Boolean()
-    reste_a_repartir = fields.Monetary(compute='_compute_amount', string='Reste à répartir', store=True, readonly=True)
+    reste_a_repartir = fields.Monetary(compute='_compute_amount', string='Reste à répartir', readonly=True)
     @api.onchange('acompte_line')
     def _compute_amount(self):
         for acompte in self:
@@ -75,7 +75,6 @@ class Acompte(models.Model):
                 raise exceptions.UserError(
                     "Veuillez selectionner une 'Date de prochaine facture'.")
             else:
-                print(record.date_prochaine_facture)
                 record.lignes_existantes = True
                 #record.montant_total_lignes_acompte = record.montant_a_repartir
                 line_number = int(PERIOD[record.type_acompte])
@@ -194,7 +193,6 @@ class Acompte(models.Model):
     def write(self, vals):
         res = super(Acompte, self).write(vals)
         for sale in self.bon_de_commande:
-            print("ACOMPTE: ",sale)
             if 'type_acompte' in vals:
                 sale['acompte_type'] = vals['type_acompte']
             if 'date_debut_acompte' in vals:
