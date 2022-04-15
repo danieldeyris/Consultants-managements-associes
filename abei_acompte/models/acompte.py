@@ -201,6 +201,15 @@ class Acompte(models.Model):
                 sale['acompte_date_debut'] = vals['date_debut_acompte']
         return res
 
+    # A FAIRE : AVANT LA SUPRESSION, FAIRE LES VERIFICATIONS DE SECURITE, COMME SI DES FACTURES N'ON PAS ETE EMISES
+    def unlink(self):
+        for sale in self.bon_de_commande:
+            sale['delete_from_acompte'] = True
+            sale['acompte_checkbox'] = False
+            sale['acompte_type'] = ''
+            sale['acompte_date_debut'] = ''
+        return super(Acompte, self).unlink()
+
 
 class AcompteLine(models.Model):
     _name = "abei_acompte.acompte.line"
@@ -211,14 +220,8 @@ class AcompteLine(models.Model):
     libelle_acompte = fields.Char(string="Libelle acompte")
     date_facture = fields.Date(string="Date Facture")
     montant_acompte = fields.Monetary(string="Montant de l'acompte", currency_field="currency_id")
-    acompte_id = fields.Many2one("abei_acompte.acompte", required=True)
-    #
-    # def unlink(self, cr, uid, ids, context=None):
-    #     qt = 0
-    #     for line in self.browse(cr, uid, ids):
-    #         qt += 1
-    #     if qt == 0:
-    #         self.acompte_id.lignes_existantes = False
+    acompte_id = fields.Many2one("abei_acompte.acompte", required=True, ondelete='cascade')
+
 
 
 
