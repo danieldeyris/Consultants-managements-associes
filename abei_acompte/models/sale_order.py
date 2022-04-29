@@ -4,7 +4,6 @@ from odoo import fields, models, api, exceptions
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    subscription_count = fields.Char(default="1")
     # Une case à cocher permet d’indiquer que la commande est soumise à acompte
     acompte_checkbox = fields.Boolean(string="Géré par acompte")
 
@@ -44,6 +43,10 @@ class SaleOrder(models.Model):
                     'montant_a_repartir': sum(sale.order_line.filtered(
                         lambda l: not l.product_id.recurring_invoice).mapped("price_subtotal"))
                 })
+                # Vérification : Si le montant total des lignes est de 0 euros (ce sont probablement des produits d'abonnements)
+                # qui ont été sélectionné : Alors, erreur
+                if sale.acompte_id['montant_a_repartir'] == 0:
+                    raise exceptions.UserError("Problème pour générer l'acompte : le montant à répartir est de 0€.")
         return res
 
     def action_open_acompte(self):
