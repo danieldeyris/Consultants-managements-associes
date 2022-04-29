@@ -32,6 +32,7 @@ Lorsque la commande est confirmée l’acompte est généré dans la gestion des
     'data': [
         'views/sale_views.xml',
         'views/acompte.xml',
+        'views/cron.xml',
         'security/ir.model.access.csv',
     ],
     'application': True,

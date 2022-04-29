@@ -1,6 +1,7 @@
 from odoo import fields, models, exceptions, api, _
 from dateutil.relativedelta import relativedelta
 from math import *
+from datetime import datetime
 
 PERIOD = {
     'mensuel': 12,
@@ -16,7 +17,7 @@ class Acompte(models.Model):
                    "prestations facturées au temps passé"
 
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
-    name = fields.Char(default="Numéro devis - Nom client", readonly=True)
+    name = fields.Char(readonly=True)
     client = fields.Many2one("res.partner", string="Client", readonly=True)
     bon_de_commande = fields.Many2one("sale.order", string="Bon de commande", readonly=True)
     date_prochaine_facture = fields.Date(string="Date de prochaine facture")
@@ -24,11 +25,11 @@ class Acompte(models.Model):
                                      ('bimestriel', 'Bimestriel'),
                                      ('trimestriel', 'Trimestriel'),
                                      ('semestriel', 'Semestriel')], string="Type d'acompte", required=True)
-    date_debut_acompte = fields.Date(string="Date début acompte", required=True)
+    date_debut_acompte = fields.Date(string="Date de début acompte", required=True)
     montant_a_repartir = fields.Monetary(string="Montant à répartir", currency_field="currency_id", required=True)
     acompte_line = fields.Many2many("abei_acompte.acompte.line")
     montant_total_lignes_acompte = fields.Monetary(compute='_compute_amount', string='Total', readonly=True)
-    millesime = fields.Many2one("abei_millesime.millesime", readonly=True)
+    millesime = fields.Many2one("abei_millesime.millesime", readonly=True, string="Millésime")
     lignes_existantes = fields.Boolean()
     reste_a_repartir = fields.Monetary(compute='_compute_amount', string='Reste à répartir', readonly=True)
     @api.onchange('acompte_line')
@@ -65,6 +66,69 @@ class Acompte(models.Model):
             "res_model": "sale.order",
             "res_id": self.bon_de_commande.id
         }
+
+    def _generate_invoice(self):
+        # acompte_line_ids = self.acompte_line.search([(
+        acompte_line_ids = self.env['abei_acompte.acompte.line'].search([(
+            'date_facture', '=', datetime.today().date()
+        )])
+        product_id = self.env['product.product'].browse(52) # 52 -> acompte
+        # product_id = self.env['res.config.settings'].deposit_default_product_id # 52 -> acompte
+        # product_id = self.env['ir.config_parameter'].get_param('deposit_default_product_id')
+
+        for line in acompte_line_ids:
+
+            order_line_id = self.env['sale.order.line'].create({
+                'name': line.libelle_acompte, # Required
+                'price_unit': line.montant_acompte, # Required
+                'product_uom_qty': 0, # Required
+                'order_id': line.acompte_id.bon_de_commande.id, # Required
+                #'discount': 0.0,
+                #'product_uom': self.product_id.uom_id.id,
+                'product_id': product_id.id,
+                #'analytic_tag_ids': analytic_tag_ids,
+                'tax_id': [(6, 0, [1])],
+                #'tax_id': [(6, 0, tax_ids)],
+                'is_downpayment': True,
+                # 'qty_delivered': 0,
+                # 'qty_to_invoice': -1, # ReadOnly
+                # 'qty_invoiced': 1, # ReadOnly
+                #'invoice_lines': ,# MANQUANT
+            })
+
+            account_move_id = self.env['account.move'].with_context(default_move_type='out_invoice').create({
+                # donnees provenant de sale_male_invoice_advance (ligne 73) def _prepare_invoice_values
+                # 'ref': order.client_order_ref,
+                'move_type': 'out_invoice',
+                'invoice_origin': line.acompte_id.bon_de_commande.name,  # readOnly
+                'invoice_user_id': line.acompte_id.bon_de_commande.user_id.id,
+                'narration': line.acompte_id.bon_de_commande.note,
+                'partner_id': line.acompte_id.bon_de_commande.partner_invoice_id.id,
+                # 'fiscal_position_id': line.acompte_id.bon_de_commande.partner_id.property_account_position_id,
+                'fiscal_position_id': 1,
+                'partner_shipping_id': line.acompte_id.bon_de_commande.partner_shipping_id.id,
+                'currency_id': line.acompte_id.bon_de_commande.pricelist_id.currency_id.id,
+                'payment_reference': line.acompte_id.bon_de_commande.reference,
+                'invoice_payment_term_id': line.acompte_id.bon_de_commande.payment_term_id.id,
+                'partner_bank_id': line.acompte_id.bon_de_commande.company_id.partner_id.bank_ids[:1].id,
+                'team_id': line.acompte_id.bon_de_commande.team_id.id,
+                'campaign_id': line.acompte_id.bon_de_commande.campaign_id.id,
+                'medium_id': line.acompte_id.bon_de_commande.medium_id.id,
+                'source_id': line.acompte_id.bon_de_commande.source_id.id,
+                'invoice_line_ids': [(0, 0, {
+                    'name': line.libelle_acompte,  # dans la facture
+                    'price_unit': line.montant_acompte,
+                    'quantity': 1.0,
+                    'product_id': product_id.id,
+                    'product_uom_id': order_line_id.product_uom.id,
+                    'tax_ids': [(6, 0, order_line_id.tax_id.ids)],
+                    'sale_line_ids': [(6, 0, [order_line_id.id])],
+                    'analytic_tag_ids': [(6, 0, order_line_id.analytic_tag_ids.ids)],
+                    'analytic_account_id': line.acompte_id.bon_de_commande.analytic_account_id.id or False,
+                })]
+            })
+
+            line.acompte_id.bon_de_commande.order_line = [(4, order_line_id.id)]
 
     def generate_acompte(self):
         for record in self:
@@ -219,8 +283,20 @@ class AcompteLine(models.Model):
     date_facture = fields.Date(string="Date Facture")
     montant_acompte = fields.Monetary(string="Montant de l'acompte", currency_field="currency_id")
     acompte_id = fields.Many2one("abei_acompte.acompte", required=True, ondelete='cascade')
+    # est_facturable = fields.Boolean(default=True)
 
 
+# class SaleOrderLine(models.Model):
+#     _inherit = 'sale.order.line'
+#
+#     qty_to_invoice = fields.Float(
+#         compute='_get_to_invoice_qty', string='To Invoice Quantity', store=True, readonly=False,
+#         digits='Product Unit of Measure')
+#     qty_invoiced = fields.Float(
+#         compute='_get_invoice_qty', string='Invoiced Quantity', store=True, readonly=False,
+#         compute_sudo=True,
+#         digits='Product Unit of Measure')
+#
 
 
 
