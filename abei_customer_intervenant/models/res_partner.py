@@ -28,4 +28,4 @@ class ResPartner(models.Model):
     collaborateur_conseil = fields.Many2one('hr.employee', string="Conseil")
 
     # refClient
-    refClient = fields.Text(string="Référence client")
+    # refClient = fields.Text(string="Référence client")
