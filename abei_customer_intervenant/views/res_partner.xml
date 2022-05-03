@@ -29,13 +29,14 @@
                             <field name="collaborateur_juridique" string="Juridique"/>
                             <field name="collaborateur_cac" string="C.A.C."/>
                             <field name="collaborateur_conseil" string="Conseil"/>
+                            <field name="refClient" string="Référence client"/>
                         </group>
                     </group>
                 </page>
             </xpath>
-            <xpath expr="//field[@name='ref']" position="after">
-                <field name="refClient"/>
-            </xpath>
+<!--            <xpath expr="//field[@name='ref']" position="after">-->
+<!--                -->
+<!--            </xpath>-->
         </field>
     </record>
 </odoo>
