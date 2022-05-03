@@ -26,3 +26,6 @@ class ResPartner(models.Model):
     collaborateur_juridique = fields.Many2one('hr.employee', string="Juridique")
     collaborateur_cac = fields.Many2one('hr.employee', string="C.A.C")
     collaborateur_conseil = fields.Many2one('hr.employee', string="Conseil")
+
+    # refClient
+    refClient = fields.Text(string="Référence client")
