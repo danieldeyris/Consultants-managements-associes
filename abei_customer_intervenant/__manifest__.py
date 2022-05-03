@@ -7,7 +7,7 @@
     'version': '14.0.0.0',
     'summary': 'Customer Intervenants',
     'description': """
-Ce module permet de gérer les collaborateurs intervenant dans des dossiers clients.
+Ce module permet de gérer les collaborateurs intervenant dans des dossiers clients...
 
 Feature :
 - Onglet Intervenants
