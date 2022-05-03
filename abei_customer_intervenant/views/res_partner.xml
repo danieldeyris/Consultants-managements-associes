@@ -33,6 +33,9 @@
                     </group>
                 </page>
             </xpath>
+              <xpath expr="//field[@name='ref']" position="after">
+                  <field name="refClient"/>
+              </xpath>
         </field>
     </record>
 </odoo>
