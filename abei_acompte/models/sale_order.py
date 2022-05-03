@@ -69,39 +69,36 @@ class SaleOrder(models.Model):
     #     return res
 
     def write(self, vals):
-        # existance acompte
-        if self.acompte_id.id:
-            # si acompte_checkbox fait partie des champs modifiés
-            if 'acompte_checkbox' in vals:
-                # si la checkbox est passée à l'état False alors qu'il existe encore des acomptes associés au devis
-                # self.delete_from_acompte ===> Si le changement d'état de la checkbox émane de abei_acompte.acompte via la suppression, alors étape sautée. Peut être amélioré.
-                if vals['acompte_checkbox'] is False and self.delete_from_acompte is False:
-                    raise exceptions.UserError(
-                        "Vous devez d'abord supprimer l'acompte associé au devis avant de pouvoir marquer ce devis comment 'Non géré par acompte'. \n\n[DEV EN COURS] - LES MODIFICATIONS DE CHAMPS NE SONT PAS ENCORE REPERCUTEES DANS L'ACOMPTE")
-
-            # si acompte_type fait partie des champs modifiés -> Vérifier qu'il n'y ait pas des lignes déjà générées dans l'acompte
-            if 'acompte_type' in vals:
-                # parcours des lignes d'acompte de l'acompte
-                for record in self.acompte_id:
-                    # s'il y a des lignes, alors erreur : il faut nettoyer avant
-                    if len(record.acompte_line) > 0:
+        res = super(SaleOrder, self).write(vals)
+        for sale in self:
+            # existance acompte
+            if sale.acompte_id.id:
+                # si acompte_checkbox fait partie des champs modifiés
+                if 'acompte_checkbox' in vals:
+                    # si la checkbox est passée à l'état False alors qu'il existe encore des acomptes associés au devis
+                    # self.delete_from_acompte ===> Si le changement d'état de la checkbox émane de abei_acompte.acompte via la suppression, alors étape sautée. Peut être amélioré.
+                    if vals['acompte_checkbox'] is False and sale.delete_from_acompte is False:
                         raise exceptions.UserError(
-                            f"Des lignes d'acompte sont présentes dans l'acompte {self.acompte_id.name}.\n\nVeuillez les supprimer avant de modifier le type d'acompte. Ou modifiez le type d'acompte directement depuis l'acompte lui-même. \n\n[DEV EN COURS] - LES MODIFICATIONS DE CHAMPS NE SONT PAS ENCORE REPERCUTEES DANS L'ACOMPTE")
+                            "Vous devez d'abord supprimer l'acompte associé au devis avant de pouvoir marquer ce devis comment 'Non géré par acompte'.")
 
-            # si acompte_date_debut fait partie des champs modifiés -> Vérifier qu'il n'y ait pas des lignes déjà générées dans l'acompte
-            if 'acompte_date_debut' in vals:
-                # parcours des lignes d'acompte de l'acompte
-                for record in self.acompte_id:
-                    # s'il y a des lignes, alors erreur : il faut nettoyer avant
-                    if len(record.acompte_line) > 0:
-                        raise exceptions.UserError(
-                            f"Des lignes d'acompte sont présentes dans l'acompte {self.acompte_id.name}.\n\nVeuillez les supprimer avant de modifier la date de début d'acompte. Ou modifiez la date de début d'acompte directement depuis l'acompte lui-même. \n\n[DEV EN COURS] - LES MODIFICATIONS DE CHAMPS NE SONT PAS ENCORE REPERCUTEES DANS L'ACOMPTE")
+                # si acompte_type fait partie des champs modifiés -> Vérifier qu'il n'y ait pas des lignes déjà générées dans l'acompte
+                if 'acompte_type' in vals:
+                    # parcours des lignes d'acompte de l'acompte
+                    for record in sale.acompte_id:
+                        # s'il y a des lignes, alors erreur : il faut nettoyer avant
+                        if len(record.acompte_line) > 0:
+                            raise exceptions.UserError(
+                                f"Des lignes d'acompte sont présentes dans l'acompte {sale.acompte_id.name}.\n\nVeuillez les supprimer avant de modifier le type d'acompte. Ou modifiez le type d'acompte directement depuis l'acompte lui-même.")
+                        # else:
+                        #     record['type_acompte'] = vals['acompte_type']
+                        #     record.write({'type_acompte': vals['acompte_type']})
+                # si acompte_date_debut fait partie des champs modifiés -> Vérifier qu'il n'y ait pas des lignes déjà générées dans l'acompte
+                if 'acompte_date_debut' in vals:
+                    # parcours des lignes d'acompte de l'acompte
+                    for record in sale.acompte_id:
+                        # s'il y a des lignes, alors erreur : il faut nettoyer avant
+                        if len(record.acompte_line) > 0:
+                            raise exceptions.UserError(
+                                f"Des lignes d'acompte sont présentes dans l'acompte {sale.acompte_id.name}.\n\nVeuillez les supprimer avant de modifier la date de début d'acompte. Ou modifiez la date de début d'acompte directement depuis l'acompte lui-même.")
 
-            # modification finale
-            # for record in self.acompte_id:
-            #     print(record['type_acompte'])
-            #     print(vals['acompte_type'])
-            #     record['type_acompte'] = vals['acompte_type']
-
-        res = super().write(vals)
         return res
