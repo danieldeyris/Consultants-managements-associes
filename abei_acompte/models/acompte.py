@@ -103,7 +103,7 @@ class Acompte(models.Model):
                 #'product_uom': self.product_id.uom_id.id,
                 'product_id': product_id.id,
                 #'analytic_tag_ids': analytic_tag_ids,
-                'tax_id': [(6, 0, [111])], # forcé [1]
+                'tax_id': [(6, 0, [product_id.taxes_id.id])], # forcé [1]
                 #'tax_id': [(6, 0, tax_ids)],
                 'is_downpayment': True,
                 # 'qty_delivered': 0,
