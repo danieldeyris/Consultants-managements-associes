@@ -2,6 +2,7 @@ from odoo import fields, models, exceptions, api, _
 from dateutil.relativedelta import relativedelta
 from math import *
 from datetime import datetime
+import logging
 
 PERIOD = {
     'mensuel': 12,
@@ -10,6 +11,7 @@ PERIOD = {
     'semestriel': 2,
 }
 
+_logger = logging.getLogger(__name__)
 
 class Acompte(models.Model):
     _name = "abei_acompte.acompte"
@@ -70,6 +72,7 @@ class Acompte(models.Model):
         }
 
     def _generate_invoice(self):
+        _logger.info('CRON LANCE')
         # Si ligne d'acompte déjà facturée, n'est pas refacturée
         acompte_line_ids = self.env['abei_acompte.acompte.line'].search([(
             'date_facture', '=', datetime.today().date()
@@ -266,6 +269,7 @@ class Acompte(models.Model):
                 self._compute_amount()
 
     def confirmer_acompte(self):
+        print("Bouton appuyé : confirmer_acompte")
         for record in self:
             if len(record.acompte_line) == 0:
                 raise exceptions.UserError(
