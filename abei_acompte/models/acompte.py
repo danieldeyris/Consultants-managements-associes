@@ -33,6 +33,7 @@ class Acompte(models.Model):
     millesime = fields.Many2one("abei_millesime.millesime", readonly=True, string="Millésime")
     lignes_existantes = fields.Boolean()
     reste_a_repartir = fields.Monetary(compute='_compute_amount', string='Reste à répartir', readonly=True)
+    facturable = fields.Boolean(default=False)
     @api.onchange('acompte_line')
     def _compute_amount(self):
         for acompte in self:
@@ -74,6 +75,8 @@ class Acompte(models.Model):
             'date_facture', '=', datetime.today().date()
         ), (
             'est_facture', '!=', True
+        ), (
+            'acompte_id.facturable', '=', True
         )])
 
         # Recherche du produit portant le nom "Acompte" pour le downpayment
@@ -81,6 +84,7 @@ class Acompte(models.Model):
         product_id = self.env['product.product'].search([(
             'name', '=', 'Acompte'
         )])
+
 
         #test = self.env.user.company_id
         for line in acompte_line_ids:
@@ -104,7 +108,7 @@ class Acompte(models.Model):
             })
 
             account_move_id = self.env['account.move'].with_context(default_move_type='out_invoice').create({
-                # donnees provenant de sale_male_invoice_advance (ligne 73) def _prepare_invoice_values
+                # donnees provenant de sale_make_invoice_advance (ligne 73) def _prepare_invoice_values
                 # 'ref': order.client_order_ref,
                 'millesime': line.acompte_id.bon_de_commande.millesime.id,
                 'move_type': 'out_invoice',
@@ -259,9 +263,13 @@ class Acompte(models.Model):
                     })]
                 self._compute_amount()
 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # !!!!!!!!VERIFICATIONS A FAIRE PLUS TARD : QU'UNE FACTURE N'AIT PAS DEJA ETE GENEREE
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    def confirme_facturable(self):
+        for record in self:
+            if len(record.acompte_line) == 0:
+                raise exceptions.UserError(
+                    "L'acompte ne peut pas être confirmé, vous n'avez pas saisi de ligne d'acompte.")
+        self.facturable = True
+
     # MODIFICATION DANS LE DEVIS DU TYPE ACOMPTE ET DE LA DATE DE DEBUT D'ACOMPTE
     def write(self, vals):
         res = super(Acompte, self).write(vals)
@@ -292,7 +300,7 @@ class AcompteLine(models.Model):
     date_facture = fields.Date(string="Date Facture")
     montant_acompte = fields.Monetary(string="Montant de l'acompte", currency_field="currency_id")
     acompte_id = fields.Many2one("abei_acompte.acompte", required=True, ondelete='cascade')
-    est_facture = fields.Boolean(default=False, readonly=True)
+    est_facture = fields.Boolean(default=False, readonly=True, string="Ligne facturée")
 
     # Anti-Suppression acomptes déjà facturés
     def unlink(self):
@@ -307,6 +315,8 @@ class AcompteLine(models.Model):
         res = super(AcompteLine, self).write(vals)
         for record in self:
             if record.est_facture:
-                raise exceptions.UserError(
-                    f"La ligne d'accompte suivante : \"{record.libelle_acompte} \" n'est pas mofidiable.\n\n Elle fait déjà l'objet d'une facturation ({record.acompte_id.bon_de_commande.name})")
+                if 'est_facture' not in vals:
+                    raise exceptions.UserError(
+                        f"La ligne d'accompte suivante : \"{record.libelle_acompte} \" n'est pas modifiable.\n\n Elle fait déjà l'objet d'une facturation ({record.acompte_id.bon_de_commande.name})")
         return res
+

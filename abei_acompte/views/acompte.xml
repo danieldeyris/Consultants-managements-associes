@@ -18,7 +18,6 @@
             </field>
         </record>
 
-
         <!-- VUE FORM -->
         <record id="sale_acompte_view_form" model="ir.ui.view">
             <field name="name">sale.acompte.view.form</field>
@@ -27,9 +26,8 @@
                 <form string="Subscription" class="o_subscription_form" create="0">
                     <!-- BOUTONS HEADER -->
                     <header>
-<!--                        <button string="Confirmer" name="confirm_acompte" type="object"/>-->
-<!--                        <button string="Fermer" name="close_acompte" type="object"/>-->
                         <button string="Générer" name="generate_acompte" type="object" class="btn-primary"/>
+                        <button string="Confirmer" name="confirme_facturable" type="object" class="btn-primary" confirm="Êtes-vous sur de vouloir confirmer cet acompte ?"  attrs="{'invisible': [('facturable', '=', True)]}"/>
                     </header>
                     <sheet string="Acompte">
                         <!-- BOUTONS CLIENT + DEVIS -->
@@ -43,6 +41,7 @@
                                 Devis
                             </button>
                         </div>
+                        <widget name="web_ribbon" title="Acompte confirmé" attrs="{'invisible': [('facturable', '!=', True)]}"/>
                         <!-- GROS TEXTE NOM -->
                         <div class="oe_title mw-100 pr-0">
                             <h1 class="flex-fill d-flex flex-row">
@@ -57,6 +56,7 @@
                                 <field name="date_prochaine_facture" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
                                 <field name="millesime"/>
                                 <field name="lignes_existantes" invisible="1"/>
+                                <field name="facturable" invisible="1"/>
                             </group>
                             <group>
                                 <field name="type_acompte" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
@@ -69,11 +69,12 @@
                             <notebook>
                                 <page string="Lignes d'acomptes" id="lines">
                                     <field name="acompte_line">
-                                        <tree editable="bottom">
-                                            <field name="numero_acompte"/>
-                                            <field name="libelle_acompte"/>
-                                            <field name="date_facture"/>
-                                            <field name="montant_acompte"/>
+                                        <tree editable="bottom" decoration-success="est_facture==True" decoration-bf="est_facture==True">
+                                            <field name="est_facture" invisible="1"/>
+                                            <field name="numero_acompte" attrs="{'readonly':[('est_facture','=',True)]}"/>
+                                            <field name="libelle_acompte" attrs="{'readonly':[('est_facture','=',True)]}"/>
+                                            <field name="date_facture" attrs="{'readonly':[('est_facture','=',True)]}"/>
+                                            <field name="montant_acompte" attrs="{'readonly':[('est_facture','=',True)]}"/>
                                         </tree>
                                     </field>
                                 </page>
@@ -90,10 +91,6 @@
                 </form>
             </field>
         </record>
-
-
-
-
 
         <!-- ACTIONS -->
         <record id="abei_acompte.acompte_action_window" model="ir.actions.act_window">
