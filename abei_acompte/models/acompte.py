@@ -33,7 +33,7 @@ class Acompte(models.Model):
     millesime = fields.Many2one("abei_millesime.millesime", readonly=True, string="Millésime")
     lignes_existantes = fields.Boolean()
     reste_a_repartir = fields.Monetary(compute='_compute_amount', string='Reste à répartir', readonly=True)
-    facturable = fields.Boolean(default=False)
+    acompte_confirme = fields.Boolean(default=False, string="Acompte confirmé")
     @api.onchange('acompte_line')
     def _compute_amount(self):
         for acompte in self:
@@ -76,7 +76,7 @@ class Acompte(models.Model):
         ), (
             'est_facture', '!=', True
         ), (
-            'acompte_id.facturable', '=', True
+            'acompte_id.acompte_confirme', '=', True
         )])
 
         # Recherche du produit portant le nom "Acompte" pour le downpayment
@@ -263,12 +263,12 @@ class Acompte(models.Model):
                     })]
                 self._compute_amount()
 
-    def confirme_facturable(self):
+    def confirmer_acompte(self):
         for record in self:
             if len(record.acompte_line) == 0:
                 raise exceptions.UserError(
                     "L'acompte ne peut pas être confirmé, vous n'avez pas saisi de ligne d'acompte.")
-        self.facturable = True
+        self.acompte_confirme = True
 
     # MODIFICATION DANS LE DEVIS DU TYPE ACOMPTE ET DE LA DATE DE DEBUT D'ACOMPTE
     def write(self, vals):

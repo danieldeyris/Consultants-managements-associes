@@ -5,8 +5,9 @@
             <field name="name">acompte.view.list</field>
             <field name="model">abei_acompte.acompte</field>
             <field name="arch" type="xml">
-                <tree string="Acomptes" create="0">
-                    <field name="display_name"/>
+                <tree string="Acomptes" create="0" decoration-success="acompte_confirme==True" decoration-bf="acompte_confirme==True">
+                    <field name="acompte_confirme" invisible="1"/>
+                    <field name="display_name" string="Libellé"/>
                     <field name="client"/>
                     <field name="millesime"/>
                     <field name="type_acompte"/>
@@ -27,7 +28,7 @@
                     <!-- BOUTONS HEADER -->
                     <header>
                         <button string="Générer" name="generate_acompte" type="object" class="btn-primary"/>
-                        <button string="Confirmer" name="confirme_facturable" type="object" class="btn-primary" confirm="Êtes-vous sur de vouloir confirmer cet acompte ?"  attrs="{'invisible': [('facturable', '=', True)]}"/>
+                        <button string="Confirmer" name="confirmer_acompte" type="object" confirm="Êtes-vous sur de vouloir confirmer cet acompte ?"  attrs="{'invisible': [('acompte_confirme', '=', True)]}"/>
                     </header>
                     <sheet string="Acompte">
                         <!-- BOUTONS CLIENT + DEVIS -->
@@ -41,7 +42,7 @@
                                 Devis
                             </button>
                         </div>
-                        <widget name="web_ribbon" title="Acompte confirmé" attrs="{'invisible': [('facturable', '!=', True)]}"/>
+                        <widget name="web_ribbon" title="Acompte confirmé" attrs="{'invisible': [('acompte_confirme', '!=', True)]}"/>
                         <!-- GROS TEXTE NOM -->
                         <div class="oe_title mw-100 pr-0">
                             <h1 class="flex-fill d-flex flex-row">
@@ -56,7 +57,7 @@
                                 <field name="date_prochaine_facture" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
                                 <field name="millesime"/>
                                 <field name="lignes_existantes" invisible="1"/>
-                                <field name="facturable" invisible="1"/>
+                                <field name="acompte_confirme" invisible="1"/>
                             </group>
                             <group>
                                 <field name="type_acompte" attrs="{'readonly':[('lignes_existantes','=',True)]}"/>
