@@ -81,7 +81,8 @@ class Acompte(models.Model):
         ), (
             'acompte_id.acompte_confirme', '=', True
         )])
-        _logger.info('acompte_line_ids', acompte_line_ids)
+        _logger.info('acompte_line_ids : %s ', acompte_line_ids)
+        _logger.info('TEST')
         # Recherche du produit portant le nom "Acompte" pour le downpayment
         # Alternative au passage par le res.config.settings -> Ventes -> Facturation -> Acomptes
         product_id = self.env['product.template'].search([(
@@ -146,6 +147,7 @@ class Acompte(models.Model):
             line.acompte_id.bon_de_commande.order_line = [(4, order_line_id.id)]
             # on passe l'acompte comme facturé
             line.write({'est_facture': True})
+        _logger.info('FIN DU CRON')
 
     def generate_acompte(self):
         for record in self:
