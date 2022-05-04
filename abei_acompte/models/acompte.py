@@ -81,14 +81,13 @@ class Acompte(models.Model):
         ), (
             'acompte_id.acompte_confirme', '=', True
         )])
-        print("acompte_line_ids : ",acompte_line_ids)
-
+        _logger.info('acompte_line_ids', acompte_line_ids)
         # Recherche du produit portant le nom "Acompte" pour le downpayment
         # Alternative au passage par le res.config.settings -> Ventes -> Facturation -> Acomptes
         product_id = self.env['product.template'].search([(
             'name', '=', 'Acompte'
         )])
-        print("product_id", product_id)
+        _logger.info('product_id', product_id)
 
 
         #test = self.env.user.company_id
