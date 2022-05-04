@@ -82,7 +82,6 @@ class Acompte(models.Model):
             'acompte_id.acompte_confirme', '=', True
         )])
         _logger.info('acompte_line_ids : %s ', acompte_line_ids.libelle_acompte)
-        _logger.info('TEST')
         # Recherche du produit portant le nom "Acompte" pour le downpayment
         # Alternative au passage par le res.config.settings -> Ventes -> Facturation -> Acomptes
         product_id = self.env['product.template'].search([(
@@ -104,7 +103,7 @@ class Acompte(models.Model):
                 #'product_uom': self.product_id.uom_id.id,
                 'product_id': product_id.id,
                 #'analytic_tag_ids': analytic_tag_ids,
-                'tax_id': [(6, 0, [1])], # forcé [1]
+                'tax_id': [(6, 0, [111])], # forcé [1]
                 #'tax_id': [(6, 0, tax_ids)],
                 'is_downpayment': True,
                 # 'qty_delivered': 0,
