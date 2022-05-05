@@ -41,7 +41,8 @@ class SaleOrder(models.Model):
                     'date_debut_acompte': sale.acompte_date_debut,
                     'millesime': sale.millesime.id,
                     'montant_a_repartir': sum(sale.order_line.filtered(
-                        lambda l: not l.product_id.recurring_invoice).mapped("price_subtotal"))
+                        lambda l: not l.product_id.recurring_invoice).mapped("price_subtotal")),
+                    'company_id': sale.company_id.id
                 })
                 # Vérification : Si le montant total des lignes est de 0 euros (ce sont probablement des produits d'abonnements)
                 # qui ont été sélectionné : Alors, erreur

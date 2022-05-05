@@ -12,7 +12,8 @@
                     <field name="millesime"/>
                     <field name="type_acompte"/>
                     <field name="date_debut_acompte"/>
-                    <field name="date_prochaine_facture"/>
+                    <field name="date_prochain_passage_cron" string="Date de prochaine facture" attrs="{'invisible': [('acompte_confirme', '!=', True)]}"/>
+                    <field name="company_id"/>
                     <field name="montant_a_repartir"/>
                     <field name="montant_total_lignes_acompte"/>
                </tree>

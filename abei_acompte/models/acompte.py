@@ -18,6 +18,7 @@ class Acompte(models.Model):
     _description = "Permet de facturer des acomptes de manière récurrente sur un devis contenant 1 ou plusieurs " \
                    "prestations facturées au temps passé"
     _order = "id desc"
+    _check_company_auto = True
 
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
     name = fields.Char(readonly=True)
@@ -36,6 +37,19 @@ class Acompte(models.Model):
     lignes_existantes = fields.Boolean()
     reste_a_repartir = fields.Monetary(compute='_compute_amount', string='Reste à répartir', readonly=True)
     acompte_confirme = fields.Boolean(default=False, string="Acompte confirmé")
+    company_id = fields.Many2one('res.company', string="Société")
+    date_prochain_passage_cron = fields.Date(compute="_calcul_prochain_passage_cron_acompte")
+
+    def _calcul_prochain_passage_cron_acompte(self):
+        for record in self:
+            default_date = None
+            record.date_prochain_passage_cron = default_date
+            for line in record.acompte_line:
+                if line.date_facture >= datetime.today().date() and line.est_facture is False:
+                    record.date_prochain_passage_cron = line.date_facture
+                    break
+
+
     @api.onchange('acompte_line')
     def _compute_amount(self):
         for acompte in self:
@@ -72,7 +86,7 @@ class Acompte(models.Model):
         }
 
     def _generate_invoice(self):
-        _logger.info('CRON LANCE')
+        _logger.info('LANCEMENT CRON "Abeille : Generate Invoice Acompte"')
         # Si ligne d'acompte déjà facturée, n'est pas refacturée
         acompte_line_ids = self.env['abei_acompte.acompte.line'].search([(
             'date_facture', '=', datetime.today().date()
@@ -81,21 +95,18 @@ class Acompte(models.Model):
         ), (
             'acompte_id.acompte_confirme', '=', True
         )])
-        _logger.info('acompte_line_ids : %s ', acompte_line_ids.libelle_acompte)
         # Recherche du produit portant le nom "Acompte" pour le downpayment
         # Alternative au passage par le res.config.settings -> Ventes -> Facturation -> Acomptes
         product_id = self.env['product.template'].search([(
             'name', '=', 'Acompte'
         )])
-        _logger.info('product_id : %s ', product_id.name)
 
-        _logger.info('Numéro de la commande : %s ', self.bon_de_commande.id)
+        print(product_id.name)
 
         #test = self.env.user.company_id
         for line in acompte_line_ids:
             order = acompte_line_ids.acompte_id.bon_de_commande
-            test = product_id.taxes_id.filtered(lambda r: r.company_id == order.company_id)
-            # taxes = product_id.taxes_id.filtered(lambda r: r.company_id == order.company_id)
+            taxes = product_id.taxes_id.filtered(lambda r: r.company_id == order.company_id)
 
             order_line_id = self.env['sale.order.line'].create({
                 'name': line.libelle_acompte, # Required
@@ -106,7 +117,7 @@ class Acompte(models.Model):
                 #'product_uom': self.product_id.uom_id.id,
                 'product_id': product_id.id,
                 #'analytic_tag_ids': analytic_tag_ids,
-                'tax_id': [(6, 0, test.ids)], # forcé [1]
+                'tax_id': [(6, 0, taxes.ids)], # forcé [1]
                 #'tax_id': [(6, 0, tax_ids)],
                 'is_downpayment': True,
                 # 'qty_delivered': 0,
@@ -150,7 +161,6 @@ class Acompte(models.Model):
             line.acompte_id.bon_de_commande.order_line = [(4, order_line_id.id)]
             # on passe l'acompte comme facturé
             line.write({'est_facture': True})
-        _logger.info('FIN DU CRON')
 
     def generate_acompte(self):
         for record in self:
@@ -273,11 +283,17 @@ class Acompte(models.Model):
                 self._compute_amount()
 
     def confirmer_acompte(self):
-        print("Bouton appuyé : confirmer_acompte")
         for record in self:
+            # CONFIRMATION ACOMPTE REFUSEE SI AUCUNE LIGNE N'EST PRESENTE DANS L'ACOMPTE
             if len(record.acompte_line) == 0:
                 raise exceptions.UserError(
                     "L'acompte ne peut pas être confirmé, vous n'avez pas saisi de ligne d'acompte.")
+            else:
+                for ligne in record.acompte_line:
+                    # CONFIRMATION ACOMPTE REFUSEE SI UNE LIGNE D'ACOMPTE SAISIE DANS LE PASSE EST PRESENTE
+                    if ligne.date_facture < datetime.today().date():
+                        raise exceptions.UserError(
+                            f"La ligne d'acompte N°{ligne.numero_acompte} à pour date de facturation le {ligne.date_facture.strftime('%d/%m/%Y')}. C'est une date antérieure à la date d'aujourd'hui. Veuillez rectifier cette ligne.")
         self.acompte_confirme = True
 
     # MODIFICATION DANS LE DEVIS DU TYPE ACOMPTE ET DE LA DATE DE DEBUT D'ACOMPTE
