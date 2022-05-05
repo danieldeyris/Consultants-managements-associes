@@ -38,9 +38,9 @@ class Acompte(models.Model):
     reste_a_repartir = fields.Monetary(compute='_compute_amount', string='Reste à répartir', readonly=True)
     acompte_confirme = fields.Boolean(default=False, string="Acompte confirmé")
     company_id = fields.Many2one('res.company', string="Société")
-    date_prochain_passage_cron = fields.Date(compute="_test")
+    date_prochain_passage_cron = fields.Date(compute="_calcul_prochain_passage_cron_acompte")
 
-    def _test(self):
+    def _calcul_prochain_passage_cron_acompte(self):
         for record in self:
             default_date = None
             record.date_prochain_passage_cron = default_date
