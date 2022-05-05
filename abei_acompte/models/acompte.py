@@ -93,6 +93,9 @@ class Acompte(models.Model):
 
         #test = self.env.user.company_id
         for line in acompte_line_ids:
+            order = acompte_line_ids.acompte_id.bon_de_commande
+            test = product_id.taxes_id.filtered(lambda r: r.company_id == order.company_id)
+            # taxes = product_id.taxes_id.filtered(lambda r: r.company_id == order.company_id)
 
             order_line_id = self.env['sale.order.line'].create({
                 'name': line.libelle_acompte, # Required
@@ -103,7 +106,7 @@ class Acompte(models.Model):
                 #'product_uom': self.product_id.uom_id.id,
                 'product_id': product_id.id,
                 #'analytic_tag_ids': analytic_tag_ids,
-                'tax_id': [(6, 0, [product_id.taxes_id.id])], # forcé [1]
+                'tax_id': [(6, 0, test.ids)], # forcé [1]
                 #'tax_id': [(6, 0, tax_ids)],
                 'is_downpayment': True,
                 # 'qty_delivered': 0,
@@ -326,4 +329,3 @@ class AcompteLine(models.Model):
                     raise exceptions.UserError(
                         f"La ligne d'accompte suivante : \"{record.libelle_acompte} \" n'est pas modifiable.\n\n Elle fait déjà l'objet d'une facturation ({record.acompte_id.bon_de_commande.name})")
         return res
-
