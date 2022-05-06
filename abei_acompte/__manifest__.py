@@ -33,6 +33,7 @@ Lorsque la commande est confirmée l’acompte est généré dans la gestion des
         'views/sale_views.xml',
         'views/acompte.xml',
         'views/cron.xml',
+        'security/acompte_security.xml',
         'security/ir.model.access.csv',
     ],
     'application': True,
