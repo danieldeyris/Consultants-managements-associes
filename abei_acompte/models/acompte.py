@@ -283,6 +283,7 @@ class Acompte(models.Model):
                 self._compute_amount()
 
     def confirmer_acompte(self):
+        cron_a_lancer = False
         for record in self:
             # CONFIRMATION ACOMPTE REFUSEE SI AUCUNE LIGNE N'EST PRESENTE DANS L'ACOMPTE
             if len(record.acompte_line) == 0:
@@ -294,7 +295,13 @@ class Acompte(models.Model):
                     if ligne.date_facture < datetime.today().date():
                         raise exceptions.UserError(
                             f"La ligne d'acompte N°{ligne.numero_acompte} à pour date de facturation le {ligne.date_facture.strftime('%d/%m/%Y')}. C'est une date antérieure à la date d'aujourd'hui. Veuillez rectifier cette ligne.")
+                    # CAS LIGNE ACOMPTE = DATE DU JOUR. ON FORCE LE LANCEMENT DU CRON
+                    elif ligne.date_facture == datetime.today().date():
+                        cron_a_lancer = True
         self.acompte_confirme = True
+        # CAS LIGNE ACOMPTE = DATE DU JOUR. ON FORCE LE LANCEMENT DU CRON
+        if cron_a_lancer:
+            self._generate_invoice()
 
     # MODIFICATION DANS LE DEVIS DU TYPE ACOMPTE ET DE LA DATE DE DEBUT D'ACOMPTE
     def write(self, vals):
@@ -306,7 +313,6 @@ class Acompte(models.Model):
                 sale['acompte_date_debut'] = vals['date_debut_acompte']
         return res
 
-    # A FAIRE : AVANT LA SUPRESSION, FAIRE LES VERIFICATIONS DE SECURITE, COMME SI DES FACTURES N'ON PAS ETE EMISES
     def unlink(self):
         for sale in self.bon_de_commande:
             sale['delete_from_acompte'] = True
@@ -344,4 +350,9 @@ class AcompteLine(models.Model):
                 if 'est_facture' not in vals:
                     raise exceptions.UserError(
                         f"La ligne d'accompte suivante : \"{record.libelle_acompte} \" n'est pas modifiable.\n\n Elle fait déjà l'objet d'une facturation ({record.acompte_id.bon_de_commande.name})")
+            # SI ACOMPTE CONFIRME ET QU'ON ESSAI DE MODIFIER UNE DATE DE FACTURE POUR UNE DATE ANTERIEURE A AUJOURD'HUI, ERREUR
+            if 'date_facture' in vals:
+                if record.date_facture < datetime.today().date() and record.acompte_id.acompte_confirme is True:
+                    raise exceptions.UserError(
+                        f"L'acompte ayant été confirmé, la ligne d'accompte N°{record.numero_acompte} ne peut pas être positionnée sur une date antérieure à la date d'aujourd'hui.")
         return res
