@@ -11,6 +11,9 @@
 Features :
 Dans la vue liste des feuilles de temps :
 - • Ajout du champ 'Client'"
+Dans la vue formulaire de la tâche :
+- • Intervertion des onglets "Description" et "Feuilles de temps"
+
 
 """,
     'author': 'Abeille',
