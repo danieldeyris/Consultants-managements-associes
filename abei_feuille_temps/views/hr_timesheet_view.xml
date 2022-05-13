@@ -5,7 +5,7 @@
         <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='date']" position="after">
-                <field name="partner_id" string="Client"/>
+                <field name="partner_id" string="Client" options="{'no_create': True, 'no_edit': True}"/>
             </xpath>
         </field>
     </record>
@@ -144,5 +144,7 @@
             </xpath>
         </field>
     </record>
+
+
 </odoo>
 
