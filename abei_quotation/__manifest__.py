@@ -8,7 +8,13 @@
     'summary': 'Quotation',
     'description': """
 Ce module ajoute dans les "order lines" du devis la possibilité de sélectionner le collaborateur affecté (Employee)
-price_unit => prend alors pour valeur le taux de facturation horaire du collaborateur.
+CAS 1 : L'article à un 'prix public' égale à 0€, alors :
+- Le price_unit prend alors pour valeur le taux de facturation horaire du collaborateur.
+CAS 2 : L'article à un 'prix public' supérieur à 0€, alors :
+- Le price_unit reste positionné sur le prix public de l'article.
+
+Pour le cas 1, OVERRIDE de la méthode odoo 'product_uom_change' pour régler le cas OU LE PRIX UNITAIRE REDEVENAIT LE PRIX UNITAIRE DE L'ARTICLE LORS DE LA MODIFICATION DE LA QUANTITE 
+(lorsqu'il était necessaire qu'il reste positionné sur le taux horaire du collaborateur)
 
 """,
     'author': 'Abeille',
