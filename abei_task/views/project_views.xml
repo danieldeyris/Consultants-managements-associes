@@ -1,0 +1,15 @@
+<odoo>
+    <record model="ir.ui.view" id="abei_task.view_task_kanban">
+        <field name="name">view_task_kanban_inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='kanban_state']" position="after">
+                <templates>
+                    <div t-attf-class="#{kanban_color(record.color.raw_value)}">
+                    </div>
+                </templates>
+             </xpath>
+        </field>
+    </record>
+</odoo>
