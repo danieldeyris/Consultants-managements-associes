@@ -9,6 +9,10 @@
     'summary': 'Project Stage Timesheet',
     'description': """
     Ce module permet de forcer la saisie des temps/saisie des quantité lors d'une étape (Projet --> Etape)
+    
+    Features :
+    - Ajout d'un champ (boolean) "Saisie des temps obligatoire"
+    - Ajout d'un champ (boolean) "Saisie de quantités obligatoire"
 
 """,
     'author': 'Abeille',
