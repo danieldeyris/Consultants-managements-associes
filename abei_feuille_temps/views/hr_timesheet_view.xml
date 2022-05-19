@@ -7,8 +7,25 @@
             <xpath expr="//field[@name='date']" position="after">
                 <field name="partner_id" string="Client" options="{'no_create': True, 'no_edit': True}"/>
             </xpath>
+            <xpath expr="//field[@name='unit_amount']" position="after">
+                <field name="nombre_bulletins" string="Nombre bulletins"/>
+            </xpath>
         </field>
     </record>
+
+<!--    <record model="ir.ui.view" id="abei_feuille_temps.view_task_form2_inherited">-->
+<!--        <field name="name">project.task.form.inherited</field>-->
+<!--        <field name="model">account.analytic.line</field>-->
+<!--        <field name="inherit_id" ref="hr_timesheet.view_task_form2_inherited"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[@name='timesheet_ids']/tree[1]/field[@name='name']" position="after">-->
+<!--                <field name="nombre_bulletins"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+
+
 
     <record model="ir.ui.view" id="abei_feuille_temps.view_task_form2_inherited">
         <field name="name">project.task.form.inherited</field>
