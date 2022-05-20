@@ -1,0 +1,56 @@
+<odoo>
+    <!-- AJOUT ETIQUETTE VUE FORMULAIRE ARTICLE -->
+    <record id="product_template_only_form_view_inhertit_abei_article" model="ir.ui.view">
+        <field name="name">product.template.only.form.view.inhertit.abei.article</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="after">
+                <field widget="many2many_tags" name="etiquette" options="{'color_field': 'color'}" string="Étiquette" attrs="{}" required="1"/>
+            </xpath>
+        </field>
+    </record>
+    <!-- AJOUT ETIQUETTE VUE TREE ARTICLE -->
+    <record id="product_template_only_tree_view_inhertit_abei_article" model="ir.ui.view">
+        <field name="name">product.template.tree_view.inhertit.abei.article</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='uom_id']" position="after">
+                <field name="etiquette" widget="many2many_tags" options="{'color_field': 'color'}"/>
+            </xpath>
+        </field>
+    </record>
+    <!-- AJOUT ETIQUETTE VUE KANBAN ARTICLE -->
+    <record id="product_template_only_kanban_view_inhertit_abei_article" model="ir.ui.view">
+        <field name="name">product.template.kanban.view.inhertit.abei.article</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[2]/strong[1]/field[@name='name']" position="after">
+                <field name="etiquette" display="full" options="{'color_field': 'color'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- AJOUT DES FILTRES ETIQUETTE SUR VUE SEARCH -->
+    <record id="product_template_search_inherit_abei_article" model="ir.ui.view">
+        <field name="name">product.template.search.inherit.abei.article</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search[1]/separator[3]" position="after">
+                <filter name="Administratif" string="Administratif" domain="[['etiquette.name','ilike','Administratif']]"/>
+                <filter name="CAC" string="CAC" domain="[['etiquette.name','ilike','CAC']]"/>
+                <filter name="Comptable" string="Comptable" domain="[['etiquette.name','ilike','Comptable']]"/>
+                <filter name="Juridique" string="Juridique" domain="[['etiquette.name','ilike','Juridique']]"/>
+                <filter name="Social" string="Social" domain="[['etiquette.name','ilike','Social']]"/>
+                <separator name="separator_up"/>
+                <filter name="Informatique" string="Informatique" domain="[['etiquette.name','ilike','Informatique']]"/>
+                <separator name="separator_down"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+
