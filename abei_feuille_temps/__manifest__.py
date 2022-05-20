@@ -13,6 +13,9 @@ Dans la vue liste des feuilles de temps :
 - • Ajout du champ 'Client'"
 Dans la vue formulaire de la tâche :
 - • Intervertion des onglets "Description" et "Feuilles de temps"
+Ajout de la saisie du nombre de bulletin dans l'onglet "Feuille de temps".
+Si une quantité de bulletin est saisie, alors une ligne est ajoutée dans le devis (Article : Bulletin de Salaire. Nombre bulletins = Quantité = Livré).
+Si une quantité de bulletin est modifiée, la ligne associée dans le devis est modifiée (modification des quantités.  Nombre bulletins = Quantité = Livré).
 
 
 """,
