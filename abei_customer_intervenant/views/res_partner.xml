@@ -14,27 +14,35 @@
                             <field name="collaborateur_assistant_paie" string="Assistant Paie"/>
                         </group>
                         <group name="group_collaborateurs" string="Collaborateurs">
-                            <field name="collaborateur_tenue" string="Tenue"/>
-                            <field name="collaborateur_revision" string="Révision"/>
-                            <field name="collaborateur_tva" string="TVA"/>
-                            <field name="collaborateur_situation" string="Situation"/>
-                            <field name="collaborateur_divers_compta_social" string="Divers Compta + Social"/>
-                            <field name="collaborateur_previsionnel" string="Prévisionnel"/>
-                            <field name="collaborateur_flash" string="Flash"/>
-                            <field name="collaborateur_divers_gestion" string="Divers Gestion"/>
-                            <field name="collaborateur_charges_sociales" string="Charges Sociales"/>
-                            <field name="collaborateur_divers_social" string="Divers Social"/>
-                            <field name="collaborateur_paie_reguliere" string="Paie Régulière"/>
-                            <field name="collaborateur_paie_occasionnelle" string="Paie Occasionnelle"/>
-                            <field name="collaborateur_juridique" string="Juridique"/>
-                            <field name="collaborateur_cac" string="C.A.C."/>
-                            <field name="collaborateur_conseil" string="Conseil"/>
+                            <field name="collaborateur_tenue"/>
+                            <field name="collaborateur_revision"/>
+                            <field name="collaborateur_tva"/>
+                            <field name="collaborateur_situation"/>
+                            <field name="collaborateur_autre_tax_et_declaration"/>
+                            <field name="collaborateur_previsionnel"/>
+                            <field name="collaborateur_flash"/>
+                            <field name="collaborateur_paie"/>
+                            <field name="collaborateur_charges_sociales"/>
+                            <field name="collaborateur_contrat_travail_et_m_disciplinaire"/>
+                            <field name="collaborateur_consult_recept"/>
+                            <field name="collaborateur_juridique"/>
+                            <field name="collaborateur_cac"/>
                         </group>
                     </group>
                 </page>
             </xpath>
             <xpath expr="//field[@name='ref']" position="after">
                 <field name="reCli" string="Référence client"/>
+            </xpath>
+            <xpath expr="//page[@name='page_intervenants']" position="after">
+                <page string="Anciens reponsables" name="page_ancien_reponsables">
+                    <group name="group_ancien_reponsables">
+                        <field name="ancien_collaborateur_principal" string="Ancien collaborateur principal"/>
+                        <field name="ancien_collaborateur_expert_comptable"/>
+                        <field name="ancien_collaborateur_assistant_comptable"/>
+                        <field name="ancien_collaborateur_assistant_paie"/>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>
