@@ -1,4 +1,5 @@
 from odoo import models, fields, api, exceptions
+from datetime import datetime
 
 
 class AnalyticLine(models.Model):
@@ -45,9 +46,9 @@ class AnalyticLine(models.Model):
                 order = record.task_id.sale_order_id
                 if order.id:
                     taxes = product_id.taxes_id.filtered(lambda r: r.company_id == order.company_id)
-
+                    mois_annee_now = datetime.today().strftime("%m/%Y")
                     self.env['sale.order.line'].create({
-                        'name': "Bulletin de salaire",
+                        'name': "Bulletin de salaire " + mois_annee_now,
                         'price_unit': product_id.list_price,
                         'product_uom_qty': record.nombre_bulletins,
                         'order_id': order.id,
