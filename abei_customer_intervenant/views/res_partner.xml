@@ -35,7 +35,7 @@
                 <field name="reCli" string="Référence client"/>
             </xpath>
             <xpath expr="//page[@name='page_intervenants']" position="after">
-                <page string="Anciens reponsables" name="page_ancien_reponsables">
+                <page string="Anciens responsables" name="page_ancien_reponsables">
                     <group name="group_ancien_reponsables">
                         <field name="ancien_collaborateur_principal" string="Ancien collaborateur principal"/>
                         <field name="ancien_collaborateur_expert_comptable"/>
