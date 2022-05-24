@@ -1,0 +1,49 @@
+<odoo>
+    <record id="partner_intervenant_inherit_form" model="ir.ui.view">
+        <field name="name">partner_intervenant_inherit_form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Intervenants" name="page_intervenants" attrs="{'invisible': [('is_company','!=',True)]}">
+                    <group name="group_intervenants">
+                        <group name="group_reponsables" string="Responsables">
+                            <field name="collaborateur_expert_comptable" string="Expert Comptable"/>
+                            <field name="collaborateur_principal" string="Collaborateur Principal"/>
+                            <field name="collaborateur_assistant_comptable" string="Assistant Comptable"/>
+                            <field name="collaborateur_assistant_paie" string="Assistant Paie"/>
+                        </group>
+                        <group name="group_collaborateurs" string="Collaborateurs">
+                            <field name="collaborateur_tenue"/>
+                            <field name="collaborateur_revision"/>
+                            <field name="collaborateur_tva"/>
+                            <field name="collaborateur_situation"/>
+                            <field name="collaborateur_autre_tax_et_declaration"/>
+                            <field name="collaborateur_previsionnel"/>
+                            <field name="collaborateur_flash"/>
+                            <field name="collaborateur_paie"/>
+                            <field name="collaborateur_charges_sociales"/>
+                            <field name="collaborateur_contrat_travail_et_m_disciplinaire"/>
+                            <field name="collaborateur_consult_recept"/>
+                            <field name="collaborateur_juridique"/>
+                            <field name="collaborateur_cac"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="reCli" string="Référence client"/>
+            </xpath>
+            <xpath expr="//page[@name='page_intervenants']" position="after">
+                <page string="Anciens responsables" name="page_ancien_reponsables">
+                    <group name="group_ancien_reponsables">
+                        <field name="ancien_collaborateur_principal" string="Ancien collaborateur principal"/>
+                        <field name="ancien_collaborateur_expert_comptable"/>
+                        <field name="ancien_collaborateur_assistant_comptable"/>
+                        <field name="ancien_collaborateur_assistant_paie"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

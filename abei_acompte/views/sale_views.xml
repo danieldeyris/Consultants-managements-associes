@@ -1,0 +1,22 @@
+<odoo>
+    <record model="ir.ui.view" id="sale_order_view_inherit">
+        <field name="name">sale.order.view.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="acompte_checkbox"/>
+                <field name="acompte_id" invisible="1"/>
+                <field name="acompte_type" attrs="{
+                'invisible': [('acompte_checkbox', '=', False)],
+                'required': [('acompte_checkbox', '=', True)]}"/>
+                <field name="acompte_date_debut" attrs="{
+                'invisible': [('acompte_checkbox', '=', False)],
+                'required': [('acompte_checkbox', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_button_box')]/button[1]" position="before">
+                <button class="oe_stat_button" name="action_open_acompte" type="object" icon="fa-book" attrs="{'invisible': [('acompte_id', '=', False)]}" string="Acompte"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

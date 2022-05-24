@@ -1,0 +1,20 @@
+<odoo>
+    <!-- Model project.task -->
+    <record id="project_view_task_search_form_inherit" model="ir.ui.view">
+        <field name="name">project.view.task.search.form.inherit</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search[1]/separator[1]" position="after">
+                <filter name="Administratif" string="Administratif" domain="[['tag_ids','ilike','Administratif']]"/>
+                <filter name="CAC" string="CAC" domain="[['tag_ids','ilike','CAC']]"/>
+                <filter name="Comptable" string="Comptable" domain="[['tag_ids','ilike','Comptable']]"/>
+                <filter name="Juridique" string="Juridique" domain="[['tag_ids','ilike','Juridique']]"/>
+                <filter name="Social" string="Social" domain="[['tag_ids','ilike','Social']]"/>
+                <separator name="separator_up"/>
+                <filter name="Informatique" string="Informatique" domain="[['tag_ids','ilike','Informatique']]"/>
+                <separator name="separator_down"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

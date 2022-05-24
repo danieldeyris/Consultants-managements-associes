@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+         <!--  Partners inherited form -->
+        <record id="view_task_partner_jonction_form" model="ir.ui.view">
+            <field name="name">res.partner.jonction.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                  <xpath expr="//field[@name='vat']" position="after">
+                    <field name="jonction_code"/>
+                  </xpath>
+            </field>
+       </record>
+
+       <record id="view_task_partner_jonction_tree" model="ir.ui.view">
+            <field name="name">res.partner.jonction.tree</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+              <xpath expr="//field[@name='display_name']" position="before">
+                <field name="jonction_code"/>
+              </xpath>
+            </field>
+       </record>
+
+       <record id="view_task_partner_jonction_filter" model="ir.ui.view">
+            <field name="name">res.partner.jonction.filter</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+              <xpath expr="//search[1]/field[@name='name']" position="after">
+                <field name="jonction_code"/>
+              </xpath>
+              <xpath expr="//filter[@name='salesperson']" position="before">
+                <filter context="{'group_by': 'jonction_code'}" name="studio_group_by_BjLk9" string="Jonction"/>
+              </xpath>
+            </field>
+       </record>
+</odoo>
