@@ -24,4 +24,8 @@ class ProductTemplate(models.Model):
 
     type_temps = fields.Many2one('abei_feuille_temps.type_temps',
                                  string="Type de saisie de temps")
+    temps_incompressible = fields.Float(string='Temps imcompressible',
+                                   related='type_temps.temps_incompressible', readonly=True)
+    temps_unitaire = fields.Float(string='Temps unitaire',
+                                   related='type_temps.temps_unitaire', readonly=True)
 

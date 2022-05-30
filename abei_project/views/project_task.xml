@@ -26,6 +26,8 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='tag_ids']" position="after">
                 <field name="type_temps"/>
+                <field name="temps_incompressible" attrs="{'invisible':[('type_temps', '=', False)]}"/>
+                <field name="temps_unitaire" attrs="{'invisible':[('type_temps', '=', False)]}"/>
             </xpath>
         </field>
     </record>
