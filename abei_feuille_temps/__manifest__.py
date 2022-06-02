@@ -32,6 +32,7 @@ Ajout de la selection du type de temps dans l'article
         'contacts',
         'hr_timesheet',
         'timesheet_grid',
+        'abei_article',
     ],
     'data': [
         'views/hr_timesheet_view.xml',

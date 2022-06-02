@@ -36,8 +36,8 @@ Idem pour la saisie des bulletins
     'website': 'https://aca-consult.com/',
     'depends': [
         'project',
-        'abei_project_stage_timesheet',
         'abei_feuille_temps',
+        'abei_article',
     ],
     'data': [
         'views/project_project.xml',

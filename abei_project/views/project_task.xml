@@ -11,8 +11,10 @@
                 <filter name="Comptable" string="Comptable" domain="[['tag_ids','ilike','Comptable']]"/>
                 <filter name="Juridique" string="Juridique" domain="[['tag_ids','ilike','Juridique']]"/>
                 <filter name="Social" string="Social" domain="[['tag_ids','ilike','Social']]"/>
-                <separator name="separator_up"/>
                 <filter name="Informatique" string="Informatique" domain="[['tag_ids','ilike','Informatique']]"/>
+                <separator name="separator_up"/>
+                <filter name="TacheEnCours" string="Tâches en cours" domain="[['is_closed','!=',True]]"/>
+                <filter name="TacheTerminee" string="Tâches terminées" domain="[['is_closed','!=',False]]"/>
                 <separator name="separator_down"/>
             </xpath>
         </field>
@@ -31,4 +33,11 @@
             </xpath>
         </field>
     </record>
+
+    <!-- FILTRE PAR DEFAUT - AFFICHAGE DES TACHES EN COURS -->
+    <record id="project.act_project_project_2_project_task_all" model="ir.actions.act_window">
+        <field name="context">{'pivot_row_groupby': ['user_id'],'default_project_id': active_id,'search_default_TacheEnCours': 1}</field>
+    </record>
+
+
 </odoo>

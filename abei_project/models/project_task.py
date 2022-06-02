@@ -5,7 +5,7 @@ from datetime import datetime
 class Task(models.Model):
     _inherit = "project.task"
 
-    type_temps = fields.Many2one('abei_feuille_temps.type_temps', string="Type de saisie de temps")
+    type_temps = fields.Many2one('abei_feuille_temps.type_temps', string="Type de saisie de temps", help="Permet de redéfinir le type de saisie de temps si différent de ceux de l'article.")
     temps_incompressible = fields.Float(string='Temps imcompressible')
     temps_unitaire = fields.Float(string='Temps unitaire')
 
@@ -24,7 +24,6 @@ class Task(models.Model):
     def changement_type_temps(self):
         self.temps_incompressible = self.type_temps.temps_incompressible
         self.temps_unitaire = self.type_temps.temps_unitaire
-
 
     def create_notification(self):
         message = {
