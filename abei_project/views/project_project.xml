@@ -6,7 +6,6 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='privacy_visibility']" position="after">
                 <field widget="many2many_tags" name="etiquette_projet" string="Etiquettes de projet" options="{'color_field': 'color'}"/>
-                <field name="specialite_collab"/>
             </xpath>
         </field>
     </record>
