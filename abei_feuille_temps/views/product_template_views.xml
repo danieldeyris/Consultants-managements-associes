@@ -1,0 +1,16 @@
+<odoo>
+    <!-- AJOUT ETIQUETTE VUE FORMULAIRE ARTICLE -->
+    <record id="product_template_only_form_view_inhertit_abei_feuille_temps" model="ir.ui.view">
+        <field name="name">product.template.only.form.view.inhertit.abei.feuille.temps</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="abei_article.product_template_only_form_view_inhertit_abei_article"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='timesheet_quantity']" position="after">
+                <field name="type_temps"/>
+                <field name="temps_incompressible" attrs="{'invisible':[('type_temps', '=', False)]}"/>
+                <field name="temps_unitaire" attrs="{'invisible':[('type_temps', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
