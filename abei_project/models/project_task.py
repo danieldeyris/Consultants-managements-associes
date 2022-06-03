@@ -53,10 +53,9 @@ class Task(models.Model):
                     if self.type_temps.id:
                         saisie_effectuee = True
                         # NOTIFICATION
-                        self.create_notification() #NE MARCHE PAS
+                        # self.create_notification() #NE MARCHE PAS
 
                         # SAISIE DE TEMPS AUTOMATIQUE
-                        #nombre_heures = self.type_temps.temps_incompressible + self.type_temps.temps_unitaire
                         # UTILISATION DES INFORMATIONS D'HEURES (potentiellement) REDEFIENIES DANS LA TACHE, PLUTOT QUE DE PRENDRE LES HEURES DE L'ARTICLE
                         nombre_heures = self.temps_incompressible + self.temps_unitaire # TEMPS_UNITAIRE A REVOIR EN FONCTION DE LA REPONSE DE JEAN-MARIE
                         date_saisie = datetime.today().strftime("%Y-%m-%d")
@@ -68,6 +67,8 @@ class Task(models.Model):
                             'user_id': self.env.uid,
                             'date': date_saisie,
                         })
+                        # NOTIFICATION
+                        self.env.user.notify_success(message=f'<center>Tâche terminée.</center><br>Saisie automatique de <b>{nombre_heures}</b> heures.')
 
                     # SI ARTICLE DEFINI COMME 'saisie de temps obligatoire'
                     if test.product_id.timesheet_mandatory and not saisie_effectuee:

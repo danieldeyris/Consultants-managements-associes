@@ -25,7 +25,7 @@ Si l'étape est flaggée comme etant une etape de cloture :
 si oui :
 - Vérification si un type_temps est défini
 si oui :
-- ajout automatique d'une ligne de temps en fonction du temps prédéfinie
+- ajout automatique d'une ligne de temps en fonction du temps prédéfinie + notification pour prévenir l'utilisateur d'un ajout de ligne de temps.
 
 si non : 
 - message prévenant de la nécessité de saisir le temps.
@@ -38,6 +38,7 @@ Idem pour la saisie des bulletins
         'project',
         'abei_feuille_temps',
         'abei_article',
+        'web_notify',
     ],
     'data': [
         'views/project_project.xml',
