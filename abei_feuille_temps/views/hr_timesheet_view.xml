@@ -8,7 +8,7 @@
                 <field name="partner_id" string="Client" options="{'no_create': True, 'no_edit': True}"/>
             </xpath>
             <xpath expr="//field[@name='unit_amount']" position="after">
-                <field name="nombre_bulletins" string="Nombre bulletins"/>
+                <field name="nombre_bulletins" string="Nombre bulletins"/> <!-- IDEAL : attrs="{'readonly' : [('task_id.sale_order_id.product_id.timesheet_quantity', '=', False)]}" -->
             </xpath>
         </field>
     </record>

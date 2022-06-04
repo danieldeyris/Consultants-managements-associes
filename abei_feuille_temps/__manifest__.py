@@ -17,6 +17,12 @@ Ajout de la saisie du nombre de bulletin dans l'onglet "Feuille de temps".
 Si une quantité de bulletin est saisie, alors une ligne est ajoutée dans le devis (Article : Bulletin de Salaire. Nombre bulletins = Quantité = Livré).
 Si une quantité de bulletin est modifiée, la ligne associée dans le devis est modifiée (modification des quantités.  Nombre bulletins = Quantité = Livré).
 
+Création table "Type temps" :
+- name
+- temps incompressible
+- temps unitaire
+
+Ajout de la selection du type de temps dans l'article
 
 """,
     'author': 'Abeille',
@@ -26,9 +32,13 @@ Si une quantité de bulletin est modifiée, la ligne associée dans le devis est
         'contacts',
         'hr_timesheet',
         'timesheet_grid',
+        'abei_article',
     ],
     'data': [
         'views/hr_timesheet_view.xml',
+        'views/type_temps.xml',
+        'views/product_template_views.xml',
+        'security/ir.model.access.csv'
     ],
     'application': True,
     'license': 'OEEL-1',

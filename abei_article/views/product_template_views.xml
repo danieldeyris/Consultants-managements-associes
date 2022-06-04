@@ -8,8 +8,13 @@
             <xpath expr="//field[@name='categ_id']" position="after">
                 <field widget="many2many_tags" name="etiquette" options="{'color_field': 'color'}" string="Étiquette" attrs="{}" required="1"/>
             </xpath>
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="timesheet_mandatory" />
+                <field name="timesheet_quantity"/>
+            </xpath>
         </field>
     </record>
+
     <!-- AJOUT ETIQUETTE VUE TREE ARTICLE -->
     <record id="product_template_only_tree_view_inhertit_abei_article" model="ir.ui.view">
         <field name="name">product.template.tree_view.inhertit.abei.article</field>

@@ -17,15 +17,28 @@ Ajout de divers filtre dans vues project.project et project.task :
 
 - Ajout champ "Etiquettes de projet" dans la vue formulaire project.project
 
-Dans le projet, vérification transfert de tâche d'une étape à une autre étape.
-Si étape flaggée comme necessitant une saisie de temps ou de bulletins (module abei_project_stage_timesheet) vérification validité, sinon, refus de transfert
+- Ajout champ "Type temps" dans la tâche. Par défaut récupère le type temps de l'article, mais peut être redéfini ici.
+
+Dans le projet, vérification lors du transfert de tâche d'une étape à une autre étape.
+Si l'étape est flaggée comme etant une etape de cloture :
+- vérification si la tâche à saisie de temps obligatoires
+si oui :
+- Vérification si un type_temps est défini
+si oui :
+- ajout automatique d'une ligne de temps en fonction du temps prédéfinie + notification pour prévenir l'utilisateur d'un ajout de ligne de temps.
+
+si non : 
+- message prévenant de la nécessité de saisir le temps.
+
+Idem pour la saisie des bulletins
 """,
     'author': 'Abeille',
     'website': 'https://aca-consult.com/',
     'depends': [
         'project',
-        'abei_project_stage_timesheet',
         'abei_feuille_temps',
+        'abei_article',
+        'web_notify',
     ],
     'data': [
         'views/project_project.xml',

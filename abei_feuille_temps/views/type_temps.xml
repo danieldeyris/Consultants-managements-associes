@@ -1,0 +1,30 @@
+<odoo>
+    <data>
+        <!-- VUE LISTE MODIFIABLE -->
+        <record id="abei_feuille_temps.type_temps_list" model="ir.ui.view">
+            <field name="name">abei_feuille_temps.type_temps.list</field>
+            <field name="model">abei_feuille_temps.type_temps</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name"/>
+                    <field name="temps_incompressible"/>
+                    <field name="temps_unitaire"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- ACTION -->
+        <record id="abei_feuille_temps.type_temps_action_window" model="ir.actions.act_window">
+            <field name="name">Type de saisie de temps</field>
+            <field name="res_model">abei_feuille_temps.type_temps</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <!-- MENU -->
+
+        <menuitem name="Type de saisie de temps" id="abei_feuille_temps.type_temps_menu" parent="hr_timesheet.hr_timesheet_menu_configuration"
+                  action="abei_feuille_temps.type_temps_action_window"/>
+
+    </data>
+</odoo>
