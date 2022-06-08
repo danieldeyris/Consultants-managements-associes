@@ -17,6 +17,10 @@ class Task(models.Model):
             res.type_temps = res.sale_line_id.product_id.type_temps
             res.temps_incompressible = res.sale_line_id.product_id.type_temps.temps_incompressible
             res.temps_unitaire = res.sale_line_id.product_id.type_temps.temps_unitaire
+        res['tag_ids'] = res.sale_line_id.product_id.etiquette
+        res['millesime_id'] = res.sale_line_id.order_id.millesime
+        res['jonction_code'] = res.sale_line_id.order_id.partner_id.jonction_code
+        res['user_id'] = res.sale_line_id.collaborateur.user_id
         return res
 
     # CAS CHANGEMENT TYPE TEMPS -> REDEFINITION DES TEMPS AFFICHES
@@ -36,6 +40,26 @@ class Task(models.Model):
             }
         }
         return message
+
+    # MODIFICATION APPORTEE A UNE TACHE
+    # ninos
+    # def write(self, vals):
+    #     res = super(Task, self).write(vals)
+    #     flag = False
+    #     # RECUPERATION ETIQUETTE DE LA TACHE
+    #     for etiquettes_tache_projet in self.project_id.etiquette_projet:
+    #         # VERIFICATION ETIQUETTE UTILISATEUR CONNECTE POUR VERIFIER SON DROIT DE MODIFIER
+    #         if etiquettes_tache_projet.name == self.env.user.employee_ids.department_id.name:
+    #             flag = True # CREATION FLAG MODIFICATION AUTORISEE
+    #
+    #     # VERIFICATION TACHE ASSIGNEE A L'UTILISATEUR CONNECTE, BIEN QUE NE FAISANT PAS PARTIE DU DEPARTEMENT
+    #     if self.user_id.id == self.env.uid:
+    #         flag = True
+    #     if not flag:
+    #         raise exceptions.UserError(
+    #             f"Votre département métier '{self.env.user.employee_ids.department_id.name}' ne vous permet pas de modifier une tâche provenant d'un autre département métier.")
+    #
+    #     return res
 
     @api.onchange('stage_id')
     def verification_changement_etape(self):
