@@ -3,6 +3,7 @@ from odoo import models, fields
 
 class ProductProduct(models.Model):
     _inherit = "product.product"
+    _order = "numerotation"
 
     # SI UNE 'Description vente' EST DEFINIE DANS L'ARTICLE
     # ALORS LORS DE LA SELECTION DE CET ARTICLE DANS LE DEVIS
