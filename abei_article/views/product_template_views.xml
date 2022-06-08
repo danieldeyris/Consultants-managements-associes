@@ -12,6 +12,9 @@
                 <field name="timesheet_mandatory" />
                 <field name="timesheet_quantity"/>
             </xpath>
+            <xpath expr="//field[@name='type']" position="before">
+                <field name="numerotation"/>
+            </xpath>
         </field>
     </record>
 
@@ -24,6 +27,9 @@
             <xpath expr="//field[@name='uom_id']" position="after">
                 <field name="etiquette" widget="many2many_tags" options="{'color_field': 'color'}"/>
             </xpath>
+            <xpath expr="//field[@name='sequence']" position="after">
+                <field name="numerotation"/>
+            </xpath>
         </field>
     </record>
     <!-- AJOUT ETIQUETTE VUE KANBAN ARTICLE -->
@@ -34,6 +40,9 @@
         <field name="arch" type="xml">
             <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[2]/strong[1]/field[@name='name']" position="after">
                 <field name="etiquette" display="full" options="{'color_field': 'color'}"/>
+            </xpath>
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[2]/strong[1]/field[@name='name']" position="after">
+                <field name="numerotation" display="right" widget="badge"/>
             </xpath>
         </field>
     </record>
