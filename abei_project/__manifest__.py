@@ -30,6 +30,10 @@ si oui :
 si non : 
 - message prévenant de la nécessité de saisir le temps.
 
+#EN COURS
+Mise en place d'une vérification de modification de tâche.
+Si un employé n'ayant pas le même département métier que la tâche essai de la modifier, avertissement.
+
 Idem pour la saisie des bulletins
 """,
     'author': 'Abeille',
