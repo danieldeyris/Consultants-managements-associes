@@ -17,6 +17,10 @@ class Task(models.Model):
             res.type_temps = res.sale_line_id.product_id.type_temps
             res.temps_incompressible = res.sale_line_id.product_id.type_temps.temps_incompressible
             res.temps_unitaire = res.sale_line_id.product_id.type_temps.temps_unitaire
+        res['tag_ids'] = res.sale_line_id.product_id.etiquette
+        res['millesime_id'] = res.sale_line_id.order_id.millesime
+        res['jonction_code'] = res.sale_line_id.order_id.partner_id.jonction_code
+        res['user_id'] = res.sale_line_id.collaborateur.user_id
         return res
 
     # CAS CHANGEMENT TYPE TEMPS -> REDEFINITION DES TEMPS AFFICHES
