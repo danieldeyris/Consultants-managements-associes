@@ -37,6 +37,26 @@ class Task(models.Model):
         }
         return message
 
+    # MODIFICATION APPORTEE A UNE TACHE
+    # ninos
+    # def write(self, vals):
+    #     res = super(Task, self).write(vals)
+    #     flag = False
+    #     # RECUPERATION ETIQUETTE DE LA TACHE
+    #     for etiquettes_tache_projet in self.project_id.etiquette_projet:
+    #         # VERIFICATION ETIQUETTE UTILISATEUR CONNECTE POUR VERIFIER SON DROIT DE MODIFIER
+    #         if etiquettes_tache_projet.name == self.env.user.employee_ids.department_id.name:
+    #             flag = True # CREATION FLAG MODIFICATION AUTORISEE
+    #
+    #     # VERIFICATION TACHE ASSIGNEE A L'UTILISATEUR CONNECTE, BIEN QUE NE FAISANT PAS PARTIE DU DEPARTEMENT
+    #     if self.user_id.id == self.env.uid:
+    #         flag = True
+    #     if not flag:
+    #         raise exceptions.UserError(
+    #             f"Votre département métier '{self.env.user.employee_ids.department_id.name}' ne vous permet pas de modifier une tâche provenant d'un autre département métier.")
+    #
+    #     return res
+
     @api.onchange('stage_id')
     def verification_changement_etape(self):
         saisie_effectuee = False
