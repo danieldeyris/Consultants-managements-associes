@@ -8,11 +8,14 @@
                 <field name="partner_id" string="Client" options="{'no_create': True, 'no_edit': True}"/>
             </xpath>
             <xpath expr="//field[@name='unit_amount']" position="after">
+                <!-- NINOS 5 -->
                 <field name="nombre_bulletins" string="Nombre bulletins"/> <!-- IDEAL : attrs="{'readonly' : [('task_id.sale_order_id.product_id.timesheet_quantity', '=', False)]}" -->
+<!--                <field name="nombre_bulletins" string="Nombre bulletins" attrs="{'readonly' : [('bull_required', '=', False)]}"/>-->
             </xpath>
         </field>
     </record>
 
+<!-- NINOS 6 -->
 <!--    <record model="ir.ui.view" id="abei_feuille_temps.view_task_form2_inherited">-->
 <!--        <field name="name">project.task.form.inherited</field>-->
 <!--        <field name="model">account.analytic.line</field>-->
@@ -26,7 +29,7 @@
 
 
 
-
+<!-- NINOS 6 -->
 <!--    <record model="ir.ui.view" id="abei_feuille_temps.view_task_form2_inherited">-->
 <!--        <field name="name">project.task.form.inherited</field>-->
 <!--        <field name="model">project.task</field>-->
