@@ -26,6 +26,6 @@ class ProductTemplate(models.Model):
                                  string="Type de saisie de temps", help="Dans le cas où l'article à des temps 'prédéfinis' (des temps connus) alors, selectionnez le type de saisie de temps.\n\n Utilité : Faciliter la saisie de temps du collaborateur (lors du transfert de tâche sur une étape de clôture, si l'article est marqué comme 'necessitant une saisie de temps obligatoire' alors Odoo se chargera de faire une saisie automatique pour l'utilisateur, en prenant pour temps de référence ceux étant indiqué dans le 'Type de saisie de temp') \n\nSi aucun type de saisie de temps n'est selectionné, alors les temps passés seront demandés au collaborateur lors du transfert de la tâche sur une étape de clôture.")
     temps_incompressible = fields.Float(string='Temps imcompressible',
                                    related='type_temps.temps_incompressible', readonly=True)
-    temps_unitaire = fields.Float(string='Temps unitaire',
+    temps_unitaire = fields.Float(string='Temps unitaire par bulletin',
                                    related='type_temps.temps_unitaire', readonly=True)
 

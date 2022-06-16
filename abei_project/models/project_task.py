@@ -7,16 +7,21 @@ class Task(models.Model):
 
     type_temps = fields.Many2one('abei_feuille_temps.type_temps', string="Type de saisie de temps", help="Permet de redéfinir le type de saisie de temps si différent de ceux de l'article.")
     temps_incompressible = fields.Float(string='Temps imcompressible')
-    temps_unitaire = fields.Float(string='Temps unitaire')
+    temps_unitaire = fields.Float(string='Temps unitaire par bulletin')
+    quantite_bulletin_estime = fields.Float(string="Quantité bulletin estimé", help="La quantité indiquée à cet endroit permet d'aider à la saisie automatique de temps. (Temps unitaire * Quantité de bulletin estimée)")
 
     # LORS DE LA CREATION DE LA TACHE, RECUPERATION DU TYPE DE TEMPS DE L'ARTICLE
     @api.model
     def create(self, vals_list):
         res = super().create(vals_list)
+        # SI TYPE DE TEMPS DEFINI POUR L'ARTCILE, RECUPERATION
         if res.sale_line_id.product_id.type_temps:
             res.type_temps = res.sale_line_id.product_id.type_temps
             res.temps_incompressible = res.sale_line_id.product_id.type_temps.temps_incompressible
             res.temps_unitaire = res.sale_line_id.product_id.type_temps.temps_unitaire
+        # SI PRESENCE D'UN ARTICLE DE TYPE BULLETIN DE SALAIRE, RECUPERATION QUANTITE SAISIE
+        if res.sale_line_id.product_id.name in ['Bulletin de Salaire','Bulletin de salaire']:
+            res.quantite_bulletin_estime = res.sale_line_id.product_uom_qty
         res['tag_ids'] = res.sale_line_id.product_id.etiquette
         res['millesime_id'] = res.sale_line_id.order_id.millesime
         res['jonction_code'] = res.sale_line_id.order_id.partner_id.jonction_code
@@ -41,8 +46,8 @@ class Task(models.Model):
         }
         return message
 
+    # NINOS 7
     # MODIFICATION APPORTEE A UNE TACHE
-    # ninos
     # def write(self, vals):
     #     res = super(Task, self).write(vals)
     #     flag = False
@@ -69,7 +74,6 @@ class Task(models.Model):
             # ALORS VERIFICATION NECESSISTE SAISIE
             for test in self.sale_line_id:
                 # # SI ARTICLE DEFINI COMME 'saisie de temps obligatoire'
-                # if test.product_id.timesheet_mandatory:
                 # AUCUNE SAISIE DE TEMPS N'EST FAITE. VERIFICATION SI AJOUT AUTOMATIQUE DE TEMPS PAR LE SYSTEME
                 if self.effective_hours == 0:
                     # SI TYPE DE TEMPS PREDEFINI, ALORS UTILISATION CE CES TEMPS POUR FAIRE LA SAISIE AUTOMATIQUE DE L'UTILISATEUR
@@ -81,7 +85,8 @@ class Task(models.Model):
 
                         # SAISIE DE TEMPS AUTOMATIQUE
                         # UTILISATION DES INFORMATIONS D'HEURES (potentiellement) REDEFIENIES DANS LA TACHE, PLUTOT QUE DE PRENDRE LES HEURES DE L'ARTICLE
-                        nombre_heures = self.temps_incompressible + self.temps_unitaire # TEMPS_UNITAIRE A REVOIR EN FONCTION DE LA REPONSE DE JEAN-MARIE
+                        calcul_temp_unitaire = self.quantite_bulletin_estime * self.temps_unitaire
+                        nombre_heures = self.temps_incompressible + calcul_temp_unitaire
                         date_saisie = datetime.today().strftime("%Y-%m-%d")
                         self.env['account.analytic.line'].create({
                             'name': '--Saisie automatique--',

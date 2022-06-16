@@ -7,6 +7,8 @@ class AnalyticLine(models.Model):
 
     partner_id = fields.Many2one('res.partner', check_company=True, required=True)
     nombre_bulletins = fields.Integer(string="Nombre bulletins")
+    # NINOS 5
+    # saisie_qt_bull_obli = fields.Boolean(related="task_id.sale_order_id.product_id.timesheet_quantity")
 
     @api.model
     def create(self, values):

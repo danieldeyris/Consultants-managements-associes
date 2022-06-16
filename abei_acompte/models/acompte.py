@@ -95,6 +95,13 @@ class Acompte(models.Model):
         ), (
             'acompte_id.acompte_confirme', '=', True
         )])
+
+        # NINOS 3
+        # ## DOWNPAYMENT ARTICLE DU PARAMETRAGE
+        # print(self.env['res.config.settings'].search([('company_id','=',self.env.company.id)])['deposit_default_product_id'].name) #ERREUR, PLUSIEURS ARTICLES SORTENT SI ARTICLE D'ACOMPTE CHANGE PLUJSIEURES FOIS
+        # for record in self.env['res.config.settings'].search([('company_id','=',self.env.company.id)])['deposit_default_product_id']:
+        #     print(record.name)
+
         # Recherche du produit portant le nom "Acompte" pour le downpayment
         # Alternative au passage par le res.config.settings -> Ventes -> Facturation -> Acomptes
         product_id = self.env['product.template'].search([(
