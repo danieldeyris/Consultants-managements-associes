@@ -66,6 +66,18 @@
         </field>
     </record>
 
+    <!-- AJOUT DE LA NUMEROATION DANS LA VUE LISTE PRODUCT.PRODUCT (visible dans la selection de l'article dans le devis) -->
+    <record id="product_product_tree_inherit_abei_article" model="ir.ui.view">
+        <field name="name">product.product.tree.inherit.abei.article</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='name']" position="before">
+                <field name="numerotation"/>
+            </xpath>
+        </field>
+    </record>
+
 
 </odoo>
 

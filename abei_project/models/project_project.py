@@ -6,4 +6,4 @@ class Project(models.Model):
 
     etiquette_projet = fields.Many2many('project.tags', string="Etiquettes de projet")
     # NINOS 2
-    department_user = fields.Char(related='user_id.department_id.name')
+    department_user = fields.Char(related='user_id.department_id.name', readonly=True)
