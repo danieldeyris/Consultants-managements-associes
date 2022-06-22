@@ -23,7 +23,8 @@
                 <filter name="Social" string="Social" domain="[('etiquette_projet','ilike','Social')]"/>
                 <filter name="Informatique" string="Informatique" domain="[('etiquette_projet','ilike','Informatique')]"/>
                 <separator name="separator_up"/>
-<!--                <filter name="MaSpecialite" string="Ma spécialité" domain="[('etiquette_projet','=','department_user')]"/> -->
+                <field name="department_user"/>
+                <filter name="MaSpecialite" string="Ma spécialité" domain="[('etiquette_projet','=','Administratif')]"/>
                 <separator name="separator_down"/>
             </xpath>
         </field>
