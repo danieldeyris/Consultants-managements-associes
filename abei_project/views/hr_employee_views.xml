@@ -1,0 +1,12 @@
+<odoo>
+    <record id="hr_employee_view_form_etiquette_metier" model="ir.ui.view">
+        <field name="name">hr.employee.view.form.etiquette.metier</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="user_tags_ids" widget="many2many_tags" string="Etiquette métier" options="{'color_field': 'color'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

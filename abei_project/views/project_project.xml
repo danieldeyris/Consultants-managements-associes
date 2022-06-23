@@ -9,6 +9,19 @@
             </xpath>
         </field>
     </record>
+
+    <!-- VUE KANBAN -->
+    <record id="project_project_kanban_inherit_abei_project" model="ir.ui.view">
+        <field name="name">project.project.kanban.inherit.abei.project</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban[1]/templates[1]/t[1]/div[1]/div[1]/span[1]/field[@name='is_favorite']" position="after">
+                <field name="etiquette_projet" display="full" options="{'color_field': 'color'}"/>
+            </xpath>
+        </field>
+    </record>
+
     <!-- Model project.project -->
     <record id="project_view_project_project_filter_inherit" model="ir.ui.view">
         <field name="name">project.view.project.project.filter.inherit</field>
@@ -23,14 +36,15 @@
                 <filter name="Social" string="Social" domain="[('etiquette_projet','ilike','Social')]"/>
                 <filter name="Informatique" string="Informatique" domain="[('etiquette_projet','ilike','Informatique')]"/>
                 <separator name="separator_up"/>
-<!--                <filter name="MaSpecialite" string="Ma spécialité" domain="[('etiquette_projet','=','department_user')]"/> &lt;!&ndash; PROBLEME DOMAIN - HELP NINOS &ndash;&gt;-->
+                <field name="department_user"/>
+                <filter name="MaSpecialite" string="Ma spécialité" domain="[('my_specialization', '=', True)]"/>
                 <separator name="separator_down"/>
             </xpath>
         </field>
     </record>
 
     <!-- FILTRE PAR DEFAUT - AFFICHAGE DES PROJETS AVEC ETIQUETTE = SPECIALITE DE L'UTILISATEUR CONNECTE -->
-<!--    <record id="project.open_view_project_all" model="ir.actions.act_window">-->
-<!--        <field name="context">{'search_default_MaSpecialite': 1}</field>-->
-<!--    </record>-->
+    <record id="project.open_view_project_all" model="ir.actions.act_window">
+        <field name="context">{'search_default_MaSpecialite': 1}</field>
+    </record>
 </odoo>

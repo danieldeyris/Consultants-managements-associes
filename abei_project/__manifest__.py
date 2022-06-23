@@ -42,9 +42,12 @@ Idem pour la saisie des bulletins
         'project',
         'abei_feuille_temps',
         'abei_article',
+        'abei_quotation',
         'web_notify',
     ],
     'data': [
+        'views/res_user_views.xml',
+        'views/hr_employee_views.xml',
         'views/project_project.xml',
         'views/project_task.xml',
     ],
