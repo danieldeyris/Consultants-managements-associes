@@ -26,6 +26,9 @@
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.view_task_form2"/>
         <field name="arch" type="xml">
+            <xpath expr="//form[1]/sheet[1]/group[1]/group[1]/field[@name='project_id']" position="after">
+                <field name="chef_de_mission" string="Chef de mission" attrs="{}"/>
+            </xpath>
             <xpath expr="//form[1]/sheet[1]/group[1]" position="after">
                 <group string="Aide à la saisie de temps automatique" name="aide_saisie_temps_auto">
                     <group name="menu_gauche">
@@ -45,17 +48,20 @@
     <record id="project.act_project_project_2_project_task_all" model="ir.actions.act_window">
         <field name="context">{'pivot_row_groupby': ['user_id'],'default_project_id': active_id,'search_default_TacheEnCours': 1}</field>
     </record>
+        <!-- FILTRE PAR DEFAUT - AFFICHAGE DES TACHES EN COURS -->
+    <record id="project.action_view_all_task" model="ir.actions.act_window">
+        <field name="context">{'search_default_my_tasks': 1, 'all_task': 0,'search_default_TacheEnCours': 1}</field>
+    </record>
 
     <!-- AJOUT BOUTON VUE LISTE "Clôturer tâche" -->
-    <record model="ir.actions.server" id="action_update_un">
-        <field name="name">Clôturer tâche(s)</field>
+    <record model="ir.actions.server" id="action_cloture_et_saisie_auto_temps">
+        <field name="name">Clôturer tâche(s) et Saisie forfaitaire des temps (si possible)</field>
         <field name="model_id" ref="model_project_task"/>
         <field name="binding_model_id" ref="model_project_task"/>
         <field name="state">code</field>
         <field name="code">
-        records.action_cloturer_tache()
+        records.action_cloture_et_saisie_auto_temps()
         </field>
     </record>
-
 
 </odoo>

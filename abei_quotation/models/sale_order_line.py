@@ -4,7 +4,8 @@ from odoo import models, fields, api
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    collaborateur = fields.Many2one('hr.employee',string="Collaborateur")
+    chef_de_mission = fields.Many2one('hr.employee', string="Chef de mission")
+    collaborateur = fields.Many2one('hr.employee', string="Collaborateur")
 
     @api.onchange('collaborateur')
     def _calcul_prix_collaborateur(self):
