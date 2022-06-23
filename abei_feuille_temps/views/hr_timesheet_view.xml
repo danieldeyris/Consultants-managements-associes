@@ -16,10 +16,11 @@
             <!-- TACHE -->
             <xpath expr="//field[@name='task_id']" position="attributes">
                 <attribute name="domain">
-                    [('partner_id', '=', partner_id)]
+                    [('partner_id', '=', partner_id), ('stage_id.is_closed','=',False)]
                 </attribute>
                 <attribute name="context"></attribute>
-                <attribute name="attrs"></attribute>
+                <attribute name="attrs">{'required' : True}</attribute>
+                <attribute name="options">{'no_quick_create':True}</attribute>
             </xpath>
             <!-- PROJECT -->
             <xpath expr="//field[@name='project_id']" position="attributes">
@@ -53,9 +54,14 @@
         <field name="model">project.task</field>
         <field name="inherit_id" ref="project.view_task_tree2"/>
         <field name="arch" type="xml">
-          <xpath expr="//field[@name='company_id']" position="after">
-            <field name="ajouter_temps"/>
-          </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="timesheet_quantity" invisible="1"/>
+                <field name="ajouter_temps"/>
+                <field name="ajouter_quantite" attrs="{'readonly' : [('timesheet_quantity', '=', False)],'required' : [('timesheet_quantity', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <xpath expr="//field[@name='project_id']" position="move"/>
+            </xpath>
         </field>
     </record>
 </odoo>
