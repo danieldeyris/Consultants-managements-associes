@@ -28,8 +28,8 @@ class Task(models.Model):
         res['tag_ids'] = res.sale_line_id.product_id.etiquette
         res['millesime_id'] = res.sale_line_id.order_id.millesime
         res['jonction_code'] = res.sale_line_id.order_id.partner_id.jonction_code
-        res['user_id'] = res.sale_line_id.collaborateur.user_id
-        res['chef_de_mission'] = res.sale_line_id.chef_de_mission
+        res['user_id'] = res.sale_line_id.collaborateur.user_id or vals_list['user_id']
+        res['chef_de_mission'] = res.sale_line_id.chef_de_mission or vals_list['chef_de_mission']
         return res
 
     # CAS CHANGEMENT TYPE TEMPS -> REDEFINITION DES TEMPS AFFICHES
