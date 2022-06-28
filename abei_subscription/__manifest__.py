@@ -23,4 +23,5 @@
     # always loaded
     'data': [
     ],
+    'application': True,
 }

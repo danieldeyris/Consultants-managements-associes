@@ -24,7 +24,7 @@ class SaleOrderLine(models.Model):
         res = super().product_uom_change()
         for record in self:
             if record.product_id.lst_price == 0.0:
-                self.price_unit = record.collaborateur.taux_facturation
+                record.price_unit = record.collaborateur.taux_facturation
         return res
 
 

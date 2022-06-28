@@ -7,21 +7,12 @@ class AnalyticLine(models.Model):
 
     partner_id = fields.Many2one('res.partner', check_company=True, required=True)
     nombre_bulletins = fields.Integer(string="Nombre bulletins")
-
-    # -------
     timesheet_quantity = fields.Boolean(compute="_compute_timesheet_quantity")
-    # project_id = fields.Many2one(readonly=True)
 
     @api.depends('task_id')
     def _compute_timesheet_quantity(self):
         for record in self:
             record.timesheet_quantity = record.task_id.sale_line_id.product_id.product_tmpl_id.timesheet_quantity
-
-    # @api.depends('task_id', 'task_id.project_id')
-    # def _compute_project_id(self):
-    #     for line in self:
-    #         line.project_id = line.task_id.project_id
-    # ----------
 
     @api.model
     def create(self, values):

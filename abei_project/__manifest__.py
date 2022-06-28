@@ -30,11 +30,13 @@ si oui :
 si non : 
 - message prévenant de la nécessité de saisir le temps.
 
-#EN COURS
-Mise en place d'une vérification de modification de tâche.
-Si un employé n'ayant pas le même département métier que la tâche essai de la modifier, avertissement.
+Mise en place d'une vérification lors de la modification d'un tâche.
+Si un employé n'ayant pas le même département métier (etiquettes projet) que la tâche essai de la modifier, ou que la tâche ne lui est pas directement affectée, avertissement.
 
-Idem pour la saisie des bulletins
+Dans la vue liste des tâches, mise en place de :
+- Un champ "ajouter temps" pour réaliser une saisie rapide, sans avoir à entrer dans la tâche.
+- Un champ "ajouter quantité" pour réaliser une saisie de quantité, sans avoir à entrer dans la tâche.
+- Un option d'action "Clôturer tâche(s) et saisie forfaitaire des temps (si possible)", pour cloturer la tâche et saisie auto des temps, sans avoir à entrer dans la tâche.
 """,
     'author': 'Abeille',
     'website': 'https://aca-consult.com/',

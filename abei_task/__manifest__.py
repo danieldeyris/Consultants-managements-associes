@@ -10,7 +10,7 @@
 
 Features :
     - Ajoute un bandeau coloré sur la gauche des tâches dans la vue Kanban. Le bandeau prend pour couleur la couleur définie dans "l'étiquette projet" de la tâche.
-
+    - Ajout d'une application sur le menu principal "Mes tâches" pour un accès plus rapide aux tâches en cours du collaborateur
 """,
     'author': 'Abeille',
     'website': 'https://aca-consult.com/',
