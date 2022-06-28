@@ -7,9 +7,9 @@
     'version': '14.0.0.0',
     'summary': 'Quotation',
     'description': """
-Ce module ajoute dans les "order lines" du devis la possibilité de sélectionner le collaborateur affecté (Employee)
+Ce module ajoute dans les "order lines" du devis la possibilité de sélectionner le chef de mission et le collaborateur affecté (Employee)
 CAS 1 : L'article à un 'prix public' égale à 0€, alors :
-- Le price_unit prend alors pour valeur le taux de facturation horaire du collaborateur.
+- Le price_unit prend alors pour valeur le taux de facturation horaire du collaborateur affecté.
 CAS 2 : L'article à un 'prix public' supérieur à 0€, alors :
 - Le price_unit reste positionné sur le prix public de l'article.
 

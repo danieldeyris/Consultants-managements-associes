@@ -14,7 +14,7 @@ Features :
 - Ajout de filtres sur l'étiquette dans les vues : Kanban, Liste
 - Dans le devis, lors de la sélection d'un article, si une 'description vente' est definie pour l'article
  alors lors de la selection de cet article dans le devis, la description (article du devis) = description vente (article), sinon description (article du devis) = libelle (article)
-
+- Ajout d'une numérotation pour classifier les articles
 """,
     'author': 'Abeille',
     'website': 'https://aca-consult.com/',

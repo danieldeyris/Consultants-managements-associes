@@ -38,18 +38,6 @@ class Task(models.Model):
         self.temps_incompressible = self.type_temps.temps_incompressible
         self.temps_unitaire = self.type_temps.temps_unitaire
 
-    def create_notification(self):
-        message = {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Warning!'),
-                'message': 'You cannot do this action now',
-                'sticky': False,
-            }
-        }
-        return message
-
     # MODIFICATION APPORTEE A UNE TACHE
     def write(self, vals):
         res = super(Task, self).write(vals)
@@ -62,7 +50,7 @@ class Task(models.Model):
                     if etiquettes_tache_projet.name == etiquettes_utilisateur.name:
                         flag = True # CREATION FLAG MODIFICATION AUTORISEE
                         break
-            # CAS PROJET N'AS PAS D'ETIQUETTE, MODIFICATION AUTORISEE POUR N'IMPORTE QUI
+            # CAS PROJET N'A PAS D'ETIQUETTE, MODIFICATION AUTORISEE POUR N'IMPORTE QUI
             if not self.project_id.etiquette_projet:
                 flag = True
 
@@ -134,7 +122,6 @@ class Task(models.Model):
                     transfert_autorise = True
                     saisie_automatique = False
 
-
                     # AUCUNE SAISIE DE TEMPS N'EST FAITE. VERIFICATION SI AJOUT AUTOMATIQUE DE TEMPS PAR LE SYSTEME
                     if record.effective_hours == 0:
                         # SI TYPE DE TEMPS PREDEFINI, ALORS UTILISATION CE CES TEMPS POUR FAIRE LA SAISIE AUTOMATIQUE DE L'UTILISATEUR
@@ -143,11 +130,8 @@ class Task(models.Model):
                             saisie_automatique = True
                     else:
                         saisie_effectuee = True
-
                     # PARCOURS DU DEVIS POUR RECUPERATION DE L'ARTICLE
                     for test in record.sale_line_id:
-                        # # SI ARTICLE DEFINI COMME 'saisie de temps obligatoire'
-
 
                         # SI ARTICLE DEFINI COMME 'saisie de temps obligatoire'
                         if test.product_id.timesheet_mandatory and not saisie_effectuee:
