@@ -17,6 +17,13 @@ class AnalyticLine(models.Model):
     @api.model
     def create(self, values):
         res = super().create(values)
+
+        saisie_quantite_requise = self.env['project.task'].browse(values['task_id']).sale_line_id.product_id.product_tmpl_id.timesheet_quantity
+
+        if saisie_quantite_requise and values['nombre_bulletins'] == 0:
+            raise exceptions.UserError(
+                f"Saisie de quantité de bulletins necessaire pour cette tâche.")
+
         for record in res:
             # SI PRESENCE DE BULLETIN DANS LA LIGNE, FACTURATION
             if record.nombre_bulletins > 0:
@@ -45,12 +52,36 @@ class AnalyticLine(models.Model):
         res = super().write(vals)
         # NOMBRE DE BULLETINS CHANGE DANS LA LIGNE DE SAISIE DE TEMPS ==> MISE A JOUR DU DEVIS CLIENT
         if 'nombre_bulletins' in vals:
+            ligne_existante = False
             order = self.task_id.sale_order_id
             for record in order:
+                # PARCOURS DES LIGNES D'ARTICLE PRESENTE DANS LE DEVIS POUR TROUVER LA LIGNE "bulletin de salaire"
                 for order_line in record.order_line:
+                    # SI LIGNE TROUVEE, FLAG POUR INCREMENTATION DU NOMBRE DE BULLETINS
                     if order_line.ligne_saisie_temps_id == self.id:
-                        order_line['product_uom_qty'] = vals['nombre_bulletins']
-                        order_line['qty_delivered'] = vals['nombre_bulletins']
+                        ligne_existante = True
+                        break
+
+                if ligne_existante:
+                    order_line['product_uom_qty'] = vals['nombre_bulletins']
+                    order_line['qty_delivered'] = vals['nombre_bulletins']
+                else:
+                    product_id = self.env['product.template'].search([(
+                        'name', '=', 'Bulletin de Salaire'
+                    )])
+                    taxes = product_id.taxes_id.filtered(lambda r: r.company_id == order.company_id)
+                    mois_annee_now = datetime.today().strftime("%m/%Y")
+                    self.env['sale.order.line'].create({
+                        'name': "Bulletin de salaire " + mois_annee_now,
+                        'price_unit': product_id.list_price,
+                        'product_uom_qty': vals['nombre_bulletins'],
+                        'order_id': order.id,
+                        'product_id': product_id.id,
+                        'tax_id': [(6, 0, taxes.ids)],
+                        'qty_delivered': vals['nombre_bulletins'],
+                        'ligne_saisie_temps_id': record.id,
+                    })
+
         return res
 
 
