@@ -21,7 +21,7 @@ class AnalyticLine(models.Model):
         if not self.env.context.get('from_saisie_auto'):
             saisie_quantite_requise = self.env['project.task'].browse(values['task_id']).sale_line_id.product_id.product_tmpl_id.timesheet_quantity
 
-            if saisie_quantite_requise and values['nombre_bulletins'] == 0:
+            if saisie_quantite_requise and res['nombre_bulletins'] == 0:
                 raise exceptions.UserError(
                     f"Saisie de quantité de bulletins necessaire pour cette tâche.")
 
@@ -43,15 +43,15 @@ class AnalyticLine(models.Model):
                                         # SI ARTICLE EN COURS DE VERIFICATION DANS L'ABONNEMENT = ARTICLE DU DEVIS
                                         if article_abonnement == ol.product_id:
                                             # SI QUANTITE SAISIE LORS DE LA SAISIE DE TEMPS DIFFERENTE DANS L'ABONNEMENT, ALORS CHANGEMENT QUANTITE DANS L'ABONNEMENT. SINON, RIEN
-                                            if values['nombre_bulletins'] != ol.subscription_id.recurring_invoice_line_ids['quantity']:
-                                                ol.subscription_id.recurring_invoice_line_ids['quantity'] = values['nombre_bulletins']
+                                            if res['nombre_bulletins'] != ol.subscription_id.recurring_invoice_line_ids['quantity']:
+                                                ol.subscription_id.recurring_invoice_line_ids['quantity'] = res['nombre_bulletins']
 
                                 else: # SI C'EST UNE BULLETIN DE SALAIRE HORS ABONNEMENT, VERIFICATION DANS LE DEVIS
-                                    ol['qty_delivered'] += values['nombre_bulletins']
+                                    ol['qty_delivered'] += res['nombre_bulletins']
                                 break
                     else:
                         raise exceptions.UserError(f"La tâche n'est rattachée à aucun devis. Les bulletins ne sont pas facturables.")
-                res['nombre_bulletins_old_value'] = values['nombre_bulletins']
+                res['nombre_bulletins_old_value'] = res['nombre_bulletins']
         return res
 
     def write(self, vals):
