@@ -15,6 +15,9 @@
             <xpath expr="//field[@name='type']" position="before">
                 <field name="numerotation"/>
             </xpath>
+            <xpath expr="//field[@name='uom_po_id']" position="after">
+                <field name="type_bulletin_de_salaire"/>
+            </xpath>
         </field>
     </record>
 

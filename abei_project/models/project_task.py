@@ -23,7 +23,7 @@ class Task(models.Model):
             res.temps_incompressible = res.sale_line_id.product_id.type_temps.temps_incompressible
             res.temps_unitaire = res.sale_line_id.product_id.type_temps.temps_unitaire
         # SI PRESENCE D'UN ARTICLE DE TYPE BULLETIN DE SALAIRE, RECUPERATION QUANTITE SAISIE
-        if res.sale_line_id.product_id.name in ['Bulletin de Salaire','Bulletin de salaire']:
+        if res.sale_line_id.product_id.type_bulletin_de_salaire:
             res.quantite_bulletin_estime = res.sale_line_id.product_uom_qty
         res['tag_ids'] = res.sale_line_id.product_id.etiquette
         res['millesime_id'] = res.sale_line_id.order_id.millesime
@@ -33,7 +33,6 @@ class Task(models.Model):
             res['chef_de_mission'] = vals_list['chef_de_mission']
         else:
             res['chef_de_mission'] = res.sale_line_id.chef_de_mission or False
-
         return res
 
     # CAS CHANGEMENT TYPE TEMPS -> REDEFINITION DES TEMPS AFFICHES
@@ -68,6 +67,7 @@ class Task(models.Model):
 
     @api.onchange('stage_id')
     def verification_changement_etape(self):
+        self = self.with_context(from_saisie_auto=True)
         # SI TACHE SELECTIONNE EST POSITIONNEE SUR UNE ETAPE DE CLOTURE :
         if self.stage_id.is_closed:
             saisie_effectuee = False
@@ -90,6 +90,7 @@ class Task(models.Model):
                             'project_id': self.project_id.id,
                             'task_id': self.ids[0],
                             'unit_amount': nombre_heures,
+                            'nombre_bulletins': 0,
                             'user_id': self.env.uid,
                             'date': date_saisie,
                         })
