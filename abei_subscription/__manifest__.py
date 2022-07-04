@@ -4,7 +4,7 @@
     'version': '14.0.0.0',
     'summary': 'Abonnements',
     'description': """
-    Ajout terme à échoir / terme échus
+    Ajout terme à échoir / terme échus.
     
     """,
     'author': 'Abeille',
