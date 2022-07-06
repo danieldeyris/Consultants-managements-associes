@@ -7,7 +7,6 @@ class AnalyticLine(models.Model):
 
     partner_id = fields.Many2one('res.partner', check_company=True, required=True)
     nombre_bulletins = fields.Integer(string="Nombre bulletins")
-    nombre_bulletins_old_value = fields.Integer()
     timesheet_quantity = fields.Boolean(compute="_compute_timesheet_quantity")
 
     @api.depends('task_id')
@@ -21,9 +20,14 @@ class AnalyticLine(models.Model):
         if not self.env.context.get('from_saisie_auto'):
             saisie_quantite_requise = self.env['project.task'].browse(values['task_id']).sale_line_id.product_id.product_tmpl_id.timesheet_quantity
 
+            # SI SAISIE QUANTITE OBLIGATOIRE POUR L'ARTICLE ET QUE SAISIE = 0. VERIFICATION SAISIE DEJA PRESENTE DANS LA TACHE. SI OUI, C'EST OK. SI NON, PAS OK.
             if saisie_quantite_requise and res['nombre_bulletins'] == 0:
-                raise exceptions.UserError(
-                    f"Saisie de quantité de bulletins necessaire pour cette tâche.")
+                somme_nombre_bulletins = 0
+                for ligne_temps in res['task_id'].timesheet_ids:
+                    somme_nombre_bulletins += ligne_temps.nombre_bulletins
+                if somme_nombre_bulletins == 0:
+                    raise exceptions.UserError(
+                        f"Saisie de quantité de bulletins necessaire pour cette tâche.")
 
             for record in res:
                 # SI PRESENCE DE BULLETIN DANS LA LIGNE, FACTURATION
@@ -31,7 +35,7 @@ class AnalyticLine(models.Model):
                     # PARCOURS DU DEVIS POUR TROUVER LA LIGNE DE BULLETIN DE SALAIRE
                     order = record.task_id.sale_order_id
                     if order.id:
-                        # PARCORUS DE TOUTES LES ORDER LINES
+                        # PARCOURS DE TOUTES LES ORDER LINES
                         for ol in order.order_line:
                             # RECHERCHE D'UN ARTICLE DE TYPE BULLETIN DE SALAIRE
                             if ol.product_id.type_bulletin_de_salaire:
@@ -42,16 +46,21 @@ class AnalyticLine(models.Model):
                                     for article_abonnement in ol.subscription_id.recurring_invoice_line_ids.product_id:
                                         # SI ARTICLE EN COURS DE VERIFICATION DANS L'ABONNEMENT = ARTICLE DU DEVIS
                                         if article_abonnement == ol.product_id:
-                                            # SI QUANTITE SAISIE LORS DE LA SAISIE DE TEMPS DIFFERENTE DANS L'ABONNEMENT, ALORS CHANGEMENT QUANTITE DANS L'ABONNEMENT. SINON, RIEN
-                                            if res['nombre_bulletins'] != ol.subscription_id.recurring_invoice_line_ids['quantity']:
-                                                ol.subscription_id.recurring_invoice_line_ids['quantity'] = res['nombre_bulletins']
+                                            somme_nombre_bulletins_ligne_temps_tache = 0
+                                            # parcours de toutes les lignes dans la tâche, pour récupérer le nombre de bulletins saisis
+                                            for ligne_temps_tache in res['task_id'].timesheet_ids:
+                                                somme_nombre_bulletins_ligne_temps_tache += ligne_temps_tache.nombre_bulletins
+                                                ol.subscription_id.recurring_invoice_line_ids['quantity'] = somme_nombre_bulletins_ligne_temps_tache
 
                                 else: # SI C'EST UNE BULLETIN DE SALAIRE HORS ABONNEMENT, VERIFICATION DANS LE DEVIS
-                                    ol['qty_delivered'] += res['nombre_bulletins']
+                                    somme_nombre_bulletins_ligne_temps_tache = 0
+                                    # parcours de toutes les lignes dans la tâche, pour récupérer le nombre de bulletins saisis
+                                    for ligne_temps_tache in res['task_id'].timesheet_ids:
+                                        somme_nombre_bulletins_ligne_temps_tache += ligne_temps_tache.nombre_bulletins
+                                        ol['qty_delivered'] = somme_nombre_bulletins_ligne_temps_tache
                                 break
                     else:
                         raise exceptions.UserError(f"La tâche n'est rattachée à aucun devis. Les bulletins ne sont pas facturables.")
-                res['nombre_bulletins_old_value'] = res['nombre_bulletins']
         return res
 
     def write(self, vals):
@@ -62,7 +71,7 @@ class AnalyticLine(models.Model):
             # PARCOURS DU DEVIS POUR TROUVER LA LIGNE DE BULLETIN DE SALAIRE
             order = self.task_id.sale_order_id
             if order.id:
-                # PARCORUS DE TOUTES LES ORDER LINES
+                # PARCOURS DE TOUTES LES ORDER LINES
                 for ol in order.order_line:
                     # RECHERCHE D'UN ARTICLE DE TYPE BULLETIN DE SALAIRE
                     if ol.product_id.type_bulletin_de_salaire:
@@ -73,16 +82,51 @@ class AnalyticLine(models.Model):
                             for article_abonnement in ol.subscription_id.recurring_invoice_line_ids.product_id:
                                 # SI ARTICLE EN COURS DE VERIFICATION DANS L'ABONNEMENT = ARTICLE DU DEVIS
                                 if article_abonnement == ol.product_id:
-                                    # SI QUANTITE SAISIE LORS DE LA SAISIE DE TEMPS DIFFERENTE DANS L'ABONNEMENT, ALORS CHANGEMENT QUANTITE DANS L'ABONNEMENT. SINON, RIEN
-                                    if vals['nombre_bulletins'] != ol.subscription_id.recurring_invoice_line_ids['quantity']:
-                                        ol.subscription_id.recurring_invoice_line_ids['quantity'] = vals['nombre_bulletins']
-                                        self.nombre_bulletins_old_value = vals['nombre_bulletins']
+                                    somme_nombre_bulletins_ligne_temps_tache = 0
+                                    # parcours de toutes les lignes dans la tâche, pour récupérer le nombre de bulletins saisis
+                                    for ligne_temps_tache in self.task_id.timesheet_ids:
+                                        somme_nombre_bulletins_ligne_temps_tache += ligne_temps_tache.nombre_bulletins
+                                        ol.subscription_id.recurring_invoice_line_ids['quantity'] = somme_nombre_bulletins_ligne_temps_tache
 
                         else:  # SI C'EST UNE BULLETIN DE SALAIRE HORS ABONNEMENT, VERIFICATION DANS LE DEVIS
-                            ol['qty_delivered'] += (vals['nombre_bulletins']-self.nombre_bulletins_old_value)
-                            self.nombre_bulletins_old_value = vals['nombre_bulletins']
+                            somme_nombre_bulletins_ligne_temps_tache = 0
+                            # parcours de toutes les lignes dans la tâche, pour récupérer le nombre de bulletins saisis
+                            for ligne_temps_tache in self.task_id.timesheet_ids:
+                                somme_nombre_bulletins_ligne_temps_tache += ligne_temps_tache.nombre_bulletins
+                                ol['qty_delivered'] = somme_nombre_bulletins_ligne_temps_tache
                         break
         return res
+
+    # def unlink(self):
+    #
+    #     order = self.task_id.sale_order_id
+    #     if order.id:
+    #         # PARCOURS DE TOUTES LES ORDER LINES
+    #         for ol in order.order_line:
+    #             # RECHERCHE D'UN ARTICLE DE TYPE BULLETIN DE SALAIRE
+    #             if ol.product_id.type_bulletin_de_salaire:
+    #                 # VERIFICATION SI LE BULLETIN DE SALAIRE EST DE TYPE ABONNEMENT OU NON
+    #                 # SI C'EST UNE BULLETIN DE SALAIRE A ABONNEMENT, VERIFICATION DANS L'ABONNEMENT
+    #                 if ol.product_id.recurring_invoice:
+    #                     # PARCOURS DE TOUS LES ARTICLES PRESENT DANS LABONNEMENT
+    #                     for article_abonnement in ol.subscription_id.recurring_invoice_line_ids.product_id:
+    #                         # SI ARTICLE EN COURS DE VERIFICATION DANS L'ABONNEMENT = ARTICLE DU DEVIS
+    #                         if article_abonnement == ol.product_id:
+    #                             somme_nombre_bulletins_ligne_temps_tache = 0
+    #                             # parcours de toutes les lignes dans la tâche, pour récupérer le nombre de bulletins saisis
+    #                             for ligne_temps_tache in self.task_id.timesheet_ids:
+    #                                 somme_nombre_bulletins_ligne_temps_tache += ligne_temps_tache.nombre_bulletins
+    #                                 ol.subscription_id.recurring_invoice_line_ids[
+    #                                     'quantity'] = somme_nombre_bulletins_ligne_temps_tache
+    #
+    #                 else:  # SI C'EST UNE BULLETIN DE SALAIRE HORS ABONNEMENT, VERIFICATION DANS LE DEVIS
+    #                     somme_nombre_bulletins_ligne_temps_tache = 0
+    #                     # parcours de toutes les lignes dans la tâche, pour récupérer le nombre de bulletins saisis
+    #                     for ligne_temps_tache in self.task_id.timesheet_ids:
+    #                         somme_nombre_bulletins_ligne_temps_tache += ligne_temps_tache.nombre_bulletins
+    #                         ol['qty_delivered'] = somme_nombre_bulletins_ligne_temps_tache
+    #                 break
+    #     return super(AnalyticLine, self).unlink()
 
 
 class SaleOrderLine(models.Model):
@@ -130,7 +174,6 @@ class Task(models.Model):
                     'name': '--Saisie automatique--',
                     'project_id': record.project_id.id,
                     'task_id': record.ids[0],
-                    'nombre_bulletins_old_value': vals['ajouter_quantite'],
                     'nombre_bulletins': vals['ajouter_quantite'],
                     'user_id': record.env.uid,
                     'date': date_saisie,
@@ -146,7 +189,6 @@ class Task(models.Model):
                     'project_id': record.project_id.id,
                     'task_id': record.ids[0],
                     'unit_amount': vals['ajouter_temps'],
-                    'nombre_bulletins_old_value': vals['ajouter_quantite'],
                     'nombre_bulletins': vals['ajouter_quantite'],
                     'user_id': record.env.uid,
                     'date': date_saisie,
