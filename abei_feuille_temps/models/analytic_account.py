@@ -18,49 +18,50 @@ class AnalyticLine(models.Model):
     def create(self, values):
         res = super().create(values)
         if not self.env.context.get('from_saisie_auto'):
-            saisie_quantite_requise = self.env['project.task'].browse(values['task_id']).sale_line_id.product_id.product_tmpl_id.timesheet_quantity
+            if 'task_id' in values:
+                saisie_quantite_requise = self.env['project.task'].browse(values['task_id']).sale_line_id.product_id.product_tmpl_id.timesheet_quantity
 
-            # SI SAISIE QUANTITE OBLIGATOIRE POUR L'ARTICLE ET QUE SAISIE = 0. VERIFICATION SAISIE DEJA PRESENTE DANS LA TACHE. SI OUI, C'EST OK. SI NON, PAS OK.
-            if saisie_quantite_requise and res['nombre_bulletins'] == 0:
-                somme_nombre_bulletins = 0
-                for ligne_temps in res['task_id'].timesheet_ids:
-                    somme_nombre_bulletins += ligne_temps.nombre_bulletins
-                if somme_nombre_bulletins == 0:
-                    raise exceptions.UserError(
-                        f"Saisie de quantité de bulletins necessaire pour cette tâche.")
+                # SI SAISIE QUANTITE OBLIGATOIRE POUR L'ARTICLE ET QUE SAISIE = 0. VERIFICATION SAISIE DEJA PRESENTE DANS LA TACHE. SI OUI, C'EST OK. SI NON, PAS OK.
+                if saisie_quantite_requise and res['nombre_bulletins'] == 0:
+                    somme_nombre_bulletins = 0
+                    for ligne_temps in res['task_id'].timesheet_ids:
+                        somme_nombre_bulletins += ligne_temps.nombre_bulletins
+                    if somme_nombre_bulletins == 0:
+                        raise exceptions.UserError(
+                            f"Saisie de quantité de bulletins necessaire pour cette tâche.")
 
-            for record in res:
-                # SI PRESENCE DE BULLETIN DANS LA LIGNE, FACTURATION
-                if record.nombre_bulletins > 0:
-                    # PARCOURS DU DEVIS POUR TROUVER LA LIGNE DE BULLETIN DE SALAIRE
-                    order = record.task_id.sale_order_id
-                    if order.id:
-                        # PARCOURS DE TOUTES LES ORDER LINES
-                        for ol in order.order_line:
-                            # RECHERCHE D'UN ARTICLE DE TYPE BULLETIN DE SALAIRE
-                            if ol.product_id.type_bulletin_de_salaire:
-                                # VERIFICATION SI LE BULLETIN DE SALAIRE EST DE TYPE ABONNEMENT OU NON
-                                # SI C'EST UNE BULLETIN DE SALAIRE A ABONNEMENT, VERIFICATION DANS L'ABONNEMENT
-                                if ol.product_id.recurring_invoice:
-                                    # PARCOURS DE TOUS LES ARTICLES PRESENT DANS LABONNEMENT
-                                    for article_abonnement in ol.subscription_id.recurring_invoice_line_ids.product_id:
-                                        # SI ARTICLE EN COURS DE VERIFICATION DANS L'ABONNEMENT = ARTICLE DU DEVIS
-                                        if article_abonnement == ol.product_id:
-                                            somme_nombre_bulletins_ligne_temps_tache = 0
-                                            # parcours de toutes les lignes dans la tâche, pour récupérer le nombre de bulletins saisis
-                                            for ligne_temps_tache in res['task_id'].timesheet_ids:
-                                                somme_nombre_bulletins_ligne_temps_tache += ligne_temps_tache.nombre_bulletins
-                                                ol.subscription_id.recurring_invoice_line_ids['quantity'] = somme_nombre_bulletins_ligne_temps_tache
+                for record in res:
+                    # SI PRESENCE DE BULLETIN DANS LA LIGNE, FACTURATION
+                    if record.nombre_bulletins > 0:
+                        # PARCOURS DU DEVIS POUR TROUVER LA LIGNE DE BULLETIN DE SALAIRE
+                        order = record.task_id.sale_order_id
+                        if order.id:
+                            # PARCOURS DE TOUTES LES ORDER LINES
+                            for ol in order.order_line:
+                                # RECHERCHE D'UN ARTICLE DE TYPE BULLETIN DE SALAIRE
+                                if ol.product_id.type_bulletin_de_salaire:
+                                    # VERIFICATION SI LE BULLETIN DE SALAIRE EST DE TYPE ABONNEMENT OU NON
+                                    # SI C'EST UNE BULLETIN DE SALAIRE A ABONNEMENT, VERIFICATION DANS L'ABONNEMENT
+                                    if ol.product_id.recurring_invoice:
+                                        # PARCOURS DE TOUS LES ARTICLES PRESENT DANS LABONNEMENT
+                                        for article_abonnement in ol.subscription_id.recurring_invoice_line_ids.product_id:
+                                            # SI ARTICLE EN COURS DE VERIFICATION DANS L'ABONNEMENT = ARTICLE DU DEVIS
+                                            if article_abonnement == ol.product_id:
+                                                somme_nombre_bulletins_ligne_temps_tache = 0
+                                                # parcours de toutes les lignes dans la tâche, pour récupérer le nombre de bulletins saisis
+                                                for ligne_temps_tache in res['task_id'].timesheet_ids:
+                                                    somme_nombre_bulletins_ligne_temps_tache += ligne_temps_tache.nombre_bulletins
+                                                    ol.subscription_id.recurring_invoice_line_ids['quantity'] = somme_nombre_bulletins_ligne_temps_tache
 
-                                else: # SI C'EST UNE BULLETIN DE SALAIRE HORS ABONNEMENT, VERIFICATION DANS LE DEVIS
-                                    somme_nombre_bulletins_ligne_temps_tache = 0
-                                    # parcours de toutes les lignes dans la tâche, pour récupérer le nombre de bulletins saisis
-                                    for ligne_temps_tache in res['task_id'].timesheet_ids:
-                                        somme_nombre_bulletins_ligne_temps_tache += ligne_temps_tache.nombre_bulletins
-                                        ol['qty_delivered'] = somme_nombre_bulletins_ligne_temps_tache
-                                break
-                    else:
-                        raise exceptions.UserError(f"La tâche n'est rattachée à aucun devis. Les bulletins ne sont pas facturables.")
+                                    else: # SI C'EST UNE BULLETIN DE SALAIRE HORS ABONNEMENT, VERIFICATION DANS LE DEVIS
+                                        somme_nombre_bulletins_ligne_temps_tache = 0
+                                        # parcours de toutes les lignes dans la tâche, pour récupérer le nombre de bulletins saisis
+                                        for ligne_temps_tache in res['task_id'].timesheet_ids:
+                                            somme_nombre_bulletins_ligne_temps_tache += ligne_temps_tache.nombre_bulletins
+                                            ol['qty_delivered'] = somme_nombre_bulletins_ligne_temps_tache
+                                    break
+                        else:
+                            raise exceptions.UserError(f"La tâche n'est rattachée à aucun devis. Les bulletins ne sont pas facturables.")
         return res
 
     def write(self, vals):
