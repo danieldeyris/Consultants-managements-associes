@@ -4,7 +4,9 @@
             <!-- POWERED BY ODOO retiré-->
             <xpath expr="//t[1]/table[1]/tr[2]" position="replace"/>
             <!-- BEST REGARDS -->
-            <xpath expr="//tbody[1]/tr[2]" position="replace"/>
+            <xpath expr="//tbody[1]/tr[3]" position="replace"/>
+
+            <!-- //t[1]/table[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[3] -->//table[1]/tr[1]/td/table/tbody/tr[3]
         </template>
     </data>
 </odoo>
