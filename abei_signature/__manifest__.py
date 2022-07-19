@@ -13,8 +13,10 @@
     'website': 'https://aca-consult.com/',
     'depends': [
         'base',
+        'mail',
     ],
     'data': [
+        'views/mail_data.xml',
         'views/res_user_views.xml',
         'security/ir.model.access.csv',
     ],
