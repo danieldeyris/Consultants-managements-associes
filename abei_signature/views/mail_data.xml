@@ -1,8 +1,8 @@
 <odoo>
     <data>
         <template id="mail_notification_paynow_abei_signature" inherit_id="mail.mail_notification_paynow">
-            <xpath expr="//table[1]/tr[2]" position="replace"/>
-            <xpath expr="//tbody[1]/tr[2]" position="replace"/>
+            <xpath expr="//t[1]/table[1]/tr[2]" position="replace"/>
+            <xpath expr="//t[1]/table[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[2]" position="replace"/>
         </template>
     </data>
 </odoo>
