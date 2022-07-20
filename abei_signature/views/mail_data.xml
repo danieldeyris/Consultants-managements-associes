@@ -2,14 +2,14 @@
     <data>
         <!-- Modification de data\mail_data.xml (Bouton envoyer par mail [devis][facture]) -->
         <template id="mail_notification_paynow_abei_signature" inherit_id="mail.mail_notification_paynow">
-            <!-- POWERED BY ODOO retiré - ok -->
+            <!-- RETRAIT POWERED BY ODOO -->
             <xpath expr="//t[1]/table[1]/tr[2]" position="replace">
                 <td align="center" style="min-width: 590px; padding: 8px; font-size:11px;"/>
             </xpath>
-            <!-- SIGNATURE FORCEE - ok -->
+            <!-- RETRAIT SIGNATURE FORCEE -->
             <xpath expr="//tbody[1]/tr[3]" position="replace"/>
 
-            <!-- BEST REGARDS -->
+            <!-- RETRAIT FORMULE POLITESSE BEST REGARDS -->
             <xpath expr="//tbody[1]/tr[2]/td/t[2]" position="replace"/>
 
             <!-- BOUTON SIGNATURE -->
@@ -21,11 +21,11 @@
         <!-- Retrait "Envoyé par XXX utilisant Odoo" de l'email envoyé depuis le chatter -->
         <template id="message_notification_email_abei_signature" inherit_id="mail.message_notification_email">
             <xpath expr="//div[1]/p[1]" position="replace">
-            % for signa in user.signature_line:
-			    % if signa.company_signature.name == object.company_id.name:
-				    ${signa.signature | safe}
-				% endif
-            % endfor
+                <div>
+                    <t t-foreach="user.signature_line" t-as="signa">
+                        <t t-esc="signa"/>
+                    </t>
+                </div>
             </xpath>
         </template>
     </data>
