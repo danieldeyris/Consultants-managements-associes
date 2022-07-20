@@ -22,6 +22,7 @@
         <template id="message_notification_email_abei_signature" inherit_id="mail.message_notification_email">
             <xpath expr="//div[1]/p[1]" position="replace">
                 <div>
+                    <span t-esc="request.env.user.name"/>
                     <span t-esc="company.name"/>
                 </div>
             </xpath>
