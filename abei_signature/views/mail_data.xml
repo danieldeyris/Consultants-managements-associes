@@ -18,9 +18,15 @@
 <!--            </xpath>-->
         </template>
 
-
+        <!-- Retrait "Envoyé par XXX utilisant Odoo" de l'email envoyé depuis le chatter -->
         <template id="message_notification_email_abei_signature" inherit_id="mail.message_notification_email">
-            <xpath expr="//div[1]/p[1]" position="replace"/>
+            <xpath expr="//div[1]/p[1]" position="replace">
+            % for signa in user.signature_line:
+			    % if signa.company_signature.name == object.company_id.name:
+				    ${signa.signature | safe}
+				% endif
+            % endfor
+            </xpath>
         </template>
     </data>
 </odoo>
