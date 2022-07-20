@@ -22,8 +22,8 @@
         <template id="message_notification_email_abei_signature" inherit_id="mail.message_notification_email">
             <xpath expr="//div[1]/p[1]" position="replace">
                 <div>
-                    <t t-foreach="user.signature_line" t-as="signa">
-                        <t t-esc="signa"/>
+                    <t t-foreach="users" t-as="user">
+                        <p><t t-esc="user"/></p>
                     </t>
                 </div>
             </xpath>
