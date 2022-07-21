@@ -12,10 +12,6 @@
             <!-- RETRAIT FORMULE POLITESSE BEST REGARDS -->
             <xpath expr="//tbody[1]/tr[2]/td/t[2]" position="replace"/>
 
-            <!-- BOUTON SIGNATURE -->
-<!--            <xpath expr="//tbody[1]/tr[2]/td/div/a" position="replace">-->
-<!--                -->
-<!--            </xpath>-->
         </template>
 
         <!-- Retrait "Envoyé par XXX utilisant Odoo" de l'email envoyé depuis le chatter -->
