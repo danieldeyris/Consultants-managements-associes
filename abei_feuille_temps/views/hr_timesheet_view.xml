@@ -11,7 +11,7 @@
             <!-- QUANTITE BULLETINS -->
             <xpath expr="//field[@name='unit_amount']" position="after">
                 <field name="timesheet_quantity" invisible="1"/>
-                <field name="nombre_bulletins" string="Nombre bulletins" attrs="{'readonly' : [('timesheet_quantity', '=', False)],'required' : [('timesheet_quantity', '=', True)]}"/>
+                <field name="nombre_bulletins" string="Nombre bulletins" attrs="{'readonly': [('timesheet_quantity', '=', False)], 'required' : [('timesheet_quantity', '=', True)]}"/>
             </xpath>
             <!-- TACHE -->
             <xpath expr="//field[@name='task_id']" position="attributes">

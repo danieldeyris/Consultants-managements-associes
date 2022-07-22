@@ -12,4 +12,12 @@
              </xpath>
         </field>
     </record>
+
+    <menuitem name="Mes tâches"
+              id="abei_task_mes_taches_menu_button"
+              web_icon="abei_task,static/description/icon_mes_taches.png"
+              action="project.action_view_all_task"
+              sequence="40">
+        <menuitem id="abei_task_liste_projets" name="Projets" action="project.open_view_project_all" sequence="1"/>
+    </menuitem>
 </odoo>

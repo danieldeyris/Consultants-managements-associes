@@ -9,3 +9,4 @@ class ProductTemplate(models.Model):
     timesheet_mandatory = fields.Boolean("Saisie des temps obligatoire", default=False)
     timesheet_quantity = fields.Boolean("Saisie de quantités obligatoire", default=False)
     numerotation = fields.Char("Numérotation", required=True)
+    type_bulletin_de_salaire = fields.Boolean(string="Type bulletin de salaire")

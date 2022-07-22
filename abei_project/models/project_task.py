@@ -23,13 +23,16 @@ class Task(models.Model):
             res.temps_incompressible = res.sale_line_id.product_id.type_temps.temps_incompressible
             res.temps_unitaire = res.sale_line_id.product_id.type_temps.temps_unitaire
         # SI PRESENCE D'UN ARTICLE DE TYPE BULLETIN DE SALAIRE, RECUPERATION QUANTITE SAISIE
-        if res.sale_line_id.product_id.name in ['Bulletin de Salaire','Bulletin de salaire']:
+        if res.sale_line_id.product_id.type_bulletin_de_salaire:
             res.quantite_bulletin_estime = res.sale_line_id.product_uom_qty
         res['tag_ids'] = res.sale_line_id.product_id.etiquette
         res['millesime_id'] = res.sale_line_id.order_id.millesime
         res['jonction_code'] = res.sale_line_id.order_id.partner_id.jonction_code
-        res['user_id'] = res.sale_line_id.collaborateur.user_id
-        res['chef_de_mission'] = res.sale_line_id.chef_de_mission
+        res['user_id'] = res.sale_line_id.collaborateur.user_id or vals_list['user_id']
+        if 'chef_de_mission' in vals_list:
+            res['chef_de_mission'] = vals_list['chef_de_mission']
+        else:
+            res['chef_de_mission'] = res.sale_line_id.chef_de_mission or False
         return res
 
     # CAS CHANGEMENT TYPE TEMPS -> REDEFINITION DES TEMPS AFFICHES
@@ -37,18 +40,6 @@ class Task(models.Model):
     def changement_type_temps(self):
         self.temps_incompressible = self.type_temps.temps_incompressible
         self.temps_unitaire = self.type_temps.temps_unitaire
-
-    def create_notification(self):
-        message = {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Warning!'),
-                'message': 'You cannot do this action now',
-                'sticky': False,
-            }
-        }
-        return message
 
     # MODIFICATION APPORTEE A UNE TACHE
     def write(self, vals):
@@ -62,7 +53,7 @@ class Task(models.Model):
                     if etiquettes_tache_projet.name == etiquettes_utilisateur.name:
                         flag = True # CREATION FLAG MODIFICATION AUTORISEE
                         break
-            # CAS PROJET N'AS PAS D'ETIQUETTE, MODIFICATION AUTORISEE POUR N'IMPORTE QUI
+            # CAS PROJET N'A PAS D'ETIQUETTE, MODIFICATION AUTORISEE POUR N'IMPORTE QUI
             if not self.project_id.etiquette_projet:
                 flag = True
 
@@ -76,6 +67,7 @@ class Task(models.Model):
 
     @api.onchange('stage_id')
     def verification_changement_etape(self):
+        self = self.with_context(from_saisie_auto=True)
         # SI TACHE SELECTIONNE EST POSITIONNEE SUR UNE ETAPE DE CLOTURE :
         if self.stage_id.is_closed:
             saisie_effectuee = False
@@ -98,6 +90,7 @@ class Task(models.Model):
                             'project_id': self.project_id.id,
                             'task_id': self.ids[0],
                             'unit_amount': nombre_heures,
+                            'nombre_bulletins': 0,
                             'user_id': self.env.uid,
                             'date': date_saisie,
                         })
@@ -134,7 +127,6 @@ class Task(models.Model):
                     transfert_autorise = True
                     saisie_automatique = False
 
-
                     # AUCUNE SAISIE DE TEMPS N'EST FAITE. VERIFICATION SI AJOUT AUTOMATIQUE DE TEMPS PAR LE SYSTEME
                     if record.effective_hours == 0:
                         # SI TYPE DE TEMPS PREDEFINI, ALORS UTILISATION CE CES TEMPS POUR FAIRE LA SAISIE AUTOMATIQUE DE L'UTILISATEUR
@@ -143,11 +135,8 @@ class Task(models.Model):
                             saisie_automatique = True
                     else:
                         saisie_effectuee = True
-
                     # PARCOURS DU DEVIS POUR RECUPERATION DE L'ARTICLE
                     for test in record.sale_line_id:
-                        # # SI ARTICLE DEFINI COMME 'saisie de temps obligatoire'
-
 
                         # SI ARTICLE DEFINI COMME 'saisie de temps obligatoire'
                         if test.product_id.timesheet_mandatory and not saisie_effectuee:
